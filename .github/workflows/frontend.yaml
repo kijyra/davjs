@@ -1,0 +1,56 @@
+name: Build and Deploy Frontend (Server)
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run build
+      - name: Upload artifact (server files)
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-server
+          path: |
+            .next
+            public
+            package.json
+            package-lock.json
+            next.config.js
+            # при необходимости: .env.production и т.д.
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-server
+          path: ./frontend-server
+
+      - name: Deploy Next.js app
+        run: |
+          $target = "C:\deploy\davjs"
+          # Очистка (кроме node_modules, если они уже есть)
+          if (Test-Path $target) {
+            Get-ChildItem -Path $target -Exclude node_modules | Remove-Item -Recurse -Force
+          } else {
+            New-Item -ItemType Directory -Path $target -Force
+          }
+          Copy-Item "./frontend-server/*" $target -Recurse -Force
+
+          # Установка зависимостей
+          Set-Location $target
+          npm ci --production
+
+          # Перезапуск службы (предполагаем, что она называется "MyNextApp")
+          Restart-Service -Name "DavJS" -ErrorAction Stop
+          Write-Host "DavJS service restarted."
