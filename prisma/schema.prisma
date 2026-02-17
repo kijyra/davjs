@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ADUsers {
+  Cn        String
+  Name      String?
+  SurName   String?
+  GivenName String?
+  Admin     Boolean
+  Group     String[]
+  Enabled   Boolean?
+  Id        Int      @id(map: "PK_ADUsers") @default(autoincrement())
+  Settings  Json?
+  Users     Users?
+}
+
+model Buildings {
+  Id         Int        @id(map: "PK_Buildings") @default(autoincrement())
+  Name       String
+  LocationId Int?       @default(0)
+  Locations  Locations? @relation(fields: [LocationId], references: [Id], onUpdate: NoAction, map: "FK_Buildings_Locations_LocationId")
+  Floors     Floors[]
+
+  @@index([LocationId], map: "IX_Buildings_LocationId")
+}
+
+model Cartridges {
+  Model         String
+  ManufactorId  Int?
+  Yield         Int?
+  Id            Int             @id(map: "PK_Cartridges") @default(autoincrement())
+  Manufactors   Manufactors?    @relation(fields: [ManufactorId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cartridges_Manufactors_ManufactorId")
+  PrinterModels PrinterModels[]
+
+  @@index([ManufactorId], map: "IX_Cartridges_ManufactorId")
+}
+
+model Floors {
+  Id         Int        @id(map: "PK_Floors") @default(autoincrement())
+  FloorNum   String
+  BuildingId Int?       @default(0)
+  Buildings  Buildings? @relation(fields: [BuildingId], references: [Id], onUpdate: NoAction, map: "FK_Floors_Buildings_BuildingId")
+  Offices    Offices[]
+
+  @@index([BuildingId], map: "IX_Floors_BuildingId")
+}
+
+model HardwareInfo {
+  Id                                          Int      @id(map: "PK_HardwareInfo") @default(autoincrement())
+  ComputerName                                String
+  ProcessorName                               String
+  TotalMemoryGB                               BigInt
+  CollectedAtUtc                              DateTime @db.Timestamptz(6)
+  DiskInfo                                    String   @default("")
+  OSVersion                                   String   @default("")
+  SerialNumber                                String   @default("")
+  VideoCard                                   String   @default("")
+  DiskType                                    String   @default("")
+  RamManufacturer                             String   @default("")
+  RamType                                     String   @default("")
+  TotalRamSlots                               Int      @default(0)
+  UsedRamSlots                                Int      @default(0)
+  IsDomainJoined                              Boolean  @default(false)
+  PCId                                        Int?     @default(0)
+  IpAddress                                   String   @default("")
+  MonitorInfo                                 String   @default("")
+  Antivirus                                   String   @default("")
+  CurrentUserName                             String   @default("")
+  DiskHealth                                  String   @default("")
+  LastUpdateDate                              String   @default("")
+  OpenPorts                                   String[] @default([])
+  PendingUpdatesCount                         Int      @default(0)
+  Printers                                    String[] @default([])
+  RamSpeed                                    String   @default("")
+  SoftwareList                                String[] @default([])
+  Uptime                                      String   @default("")
+  UsbDevices                                  String[] @default([])
+  MotherboardModel                            String   @default("")
+  PCs_HardwareInfo_PCIdToPCs                  PCs?     @relation("HardwareInfo_PCIdToPCs", fields: [PCId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_HardwareInfo_PCs_PCId")
+  PCs_PCs_CurrentHardwareInfoIdToHardwareInfo PCs?     @relation("PCs_CurrentHardwareInfoIdToHardwareInfo")
+
+  @@index([PCId], map: "IX_HardwareInfo_PCId")
+}
+
+model Locations {
+  Id        Int         @id(map: "PK_Locations") @default(autoincrement())
+  Address   String?
+  Name      String
+  Buildings Buildings[]
+}
+
+model Manufactors {
+  Id         Int          @id(map: "PK_Manufactors") @default(autoincrement())
+  Name       String
+  Cartridges Cartridges[]
+}
+
+model Offices {
+  Id         Int          @id(map: "PK_Offices") @default(autoincrement())
+  Name       String
+  FloorId    Int?         @default(0)
+  Floors     Floors?      @relation(fields: [FloorId], references: [Id], onUpdate: NoAction, map: "FK_Offices_Floors_FloorId")
+  Workplaces Workplaces[]
+
+  @@index([FloorId], map: "IX_Offices_FloorId")
+}
+
+model PCs {
+  Hostname                                             String?
+  IP                                                   String
+  Domain                                               Boolean
+  Anydesk                                              String?
+  Id                                                   Int            @id(map: "PK_PCs") @default(autoincrement())
+  Think                                                Boolean        @default(false)
+  CurrentHardwareInfoId                                Int?           @unique(map: "IX_PCs_CurrentHardwareInfoId")
+  HardwareInfo_HardwareInfo_PCIdToPCs                  HardwareInfo[] @relation("HardwareInfo_PCIdToPCs")
+  HardwareInfo_PCs_CurrentHardwareInfoIdToHardwareInfo HardwareInfo?  @relation("PCs_CurrentHardwareInfoIdToHardwareInfo", fields: [CurrentHardwareInfoId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PCs_HardwareInfo_CurrentHardwareInfoId")
+  Workplaces                                           Workplaces?
+}
+
+model Phones {
+  Id         Int         @id(map: "PK_Phones") @default(autoincrement())
+  Handset    Boolean
+  Ip         String
+  NameInBase String?
+  Model      String
+  Number     Int
+  Workplaces Workplaces?
+}
+
+model PrinterModels {
+  Name        String
+  MFP         Boolean
+  Id          Int         @id(map: "PK_PrinterModels") @default(autoincrement())
+  CartridgeId Int?
+  Cartridges  Cartridges? @relation(fields: [CartridgeId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_PrinterModels_Cartridges_CartridgeId")
+  Printers    Printers[]
+
+  @@index([CartridgeId], map: "IX_PrinterModels_CartridgeId")
+}
+
+model Printers {
+  Id              Int           @id(map: "PK_Printers") @default(autoincrement())
+  PrintCount      Int?
+  ScanCount       Int?
+  LastFuserRepair String[]      @default([])
+  HostName        String?
+  IP              String        @default("")
+  PrinterModelId  Int           @default(0)
+  PrinterName     String        @default("")
+  LastUpdateSNMP  String?
+  PrinterModels   PrinterModels @relation(fields: [PrinterModelId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Printers_PrinterModels_PrinterModelId")
+  Users           Users[]
+  Workplaces      Workplaces[]
+
+  @@index([PrinterModelId], map: "IX_Printers_PrinterModelId")
+}
+
+model Users {
+  Position   String
+  Name       String      @default("")
+  SurName    String      @default("")
+  Id         Int         @id(map: "PK_Users") @default(autoincrement())
+  Bitrix     Int?        @default(0)
+  ADUserId   Int?        @unique(map: "IX_Users_ADUserId")
+  PrinterId  Int?
+  ADUsers    ADUsers?    @relation(fields: [ADUserId], references: [Id], onUpdate: NoAction, map: "FK_Users_ADUsers_ADUserId")
+  Printers   Printers?   @relation(fields: [PrinterId], references: [Id], onUpdate: NoAction, map: "FK_Users_Printers_PrinterId")
+  Workplaces Workplaces?
+
+  @@index([PrinterId], map: "IX_Users_PrinterId")
+}
+
+model Workplaces {
+  Id        Int       @id(map: "PK_Workplaces") @default(autoincrement())
+  Name      String
+  Print     Boolean
+  OfficeId  Int?      @default(0)
+  PrinterId Int?
+  PCId      Int?      @unique(map: "IX_Workplaces_PCId")
+  PhoneId   Int?      @unique(map: "IX_Workplaces_PhoneId")
+  UserId    Int?      @unique(map: "IX_Workplaces_UserId")
+  Offices   Offices?  @relation(fields: [OfficeId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Workplaces_Offices_OfficeId")
+  PCs       PCs?      @relation(fields: [PCId], references: [Id], onUpdate: NoAction, map: "FK_Workplaces_PCs_PCId")
+  Phones    Phones?   @relation(fields: [PhoneId], references: [Id], onUpdate: NoAction, map: "FK_Workplaces_Phones_PhoneId")
+  Printers  Printers? @relation(fields: [PrinterId], references: [Id], onUpdate: NoAction, map: "FK_Workplaces_Printers_PrinterId")
+  Users     Users?    @relation(fields: [UserId], references: [Id], onUpdate: NoAction, map: "FK_Workplaces_Users_UserId")
+
+  @@index([OfficeId], map: "IX_Workplaces_OfficeId")
+  @@index([PrinterId], map: "IX_Workplaces_PrinterId")
+}
+
+model EFMigrationsHistory {
+  MigrationId    String @id(map: "PK___EFMigrationsHistory") @db.VarChar(150)
+  ProductVersion String @db.VarChar(32)
+
+  @@map("__EFMigrationsHistory")
+}

@@ -2,27 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { ADUser } from '../types/index';
-import { json } from 'stream/consumers';
+import { apiFetch } from '../../services/api';
+
+import InstructionsModal from '../../components/Settings/InstructionModal'
+import ReportsModal from '../../components/Settings/ReportsModal';
+import UserSettingsModal from '../../components/Settings/UserSettingsModal';
 
 export default function SettingsPage() {
   const [user, setUser] = useState<ADUser | null>(null);
   const [loading, setLoading] = useState(true);
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
-    useEffect(() => {
-      fetch('https://dc1.dallari.biz/api/home/profile', {
-        credentials: 'include'
-      })
-      .then(res => {
-        if (!res.ok) {
-          console.log("Статус ответа сервера:", res.status);
-            throw new Error('Network response was not ok: ' + res.statusText);
-        }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReportsOpen, setIsReportsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-        return res.json();
-      })
+useEffect(() => {
+      apiFetch<ADUser>('/api/home/profile')
       .then(data => {
-         console.log("Получены данные (data):", data);
+        console.log("Получены данные (data):", data);
         if (data) {
             setUser(data);
         }
@@ -62,7 +60,7 @@ export default function SettingsPage() {
                     <span className="badge bg-danger-subtle text-danger border border-danger-subtle">
                       Администратор
                     </span>
-                    <a href="/admin/database" className="text-muted" title="Управление БД">
+                    <a href="/dbadmin" className="text-muted" title="Управление БД">
                       <i className="bi bi-database fs-6"></i>
                     </a>
                   </>
@@ -73,17 +71,20 @@ export default function SettingsPage() {
               </div>
 
               <div className="d-grid gap-2">
-                <button 
-                  className={`btn btn-outline-primary ${!user.admin ? 'disabled' : ''}`}
-                  onClick={() => {/* Логика открытия настроек */}}
-                >
-                  Настройки профиля
-                </button>
-                {user.admin && (
-                  <button className="btn btn-link btn-sm text-decoration-none">
-                    Как подключиться?
+                  <button 
+                    className={`btn btn-outline-primary ${!user.admin ? 'disabled' : ''}`}
+                    onClick={() => setIsSettingsOpen(true)}
+                  >
+                    Настройки профиля
                   </button>
-                )}
+                  {user.admin && (
+                    <button 
+                      className="btn btn-link btn-sm text-decoration-none"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      Как подключиться?
+                    </button>
+                  )}
               </div>
             </div>
 
@@ -100,7 +101,7 @@ export default function SettingsPage() {
                 </li>
                 <li className="d-flex justify-content-between">
                   <span className="text-muted">Домен:</span>
-                  <span className="fw-medium">BIZ</span> {/* Или пробросьте из API */}
+                  <span className="fw-medium">DALLARI.BIZ</span>
                 </li>
               </ul>
             </div>
@@ -113,7 +114,10 @@ export default function SettingsPage() {
             <div className="card-header bg-transparent border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
               <h5 className="card-title mb-0">Группы доступа AD</h5>
               {user.admin && (
-                <button className="btn btn-sm btn-outline-primary">
+                <button 
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() => setIsReportsOpen(true)}
+                >
                   <i className="bi bi-file-earmark-bar-graph me-1"></i> Отчёты
                 </button>
               )}
@@ -131,6 +135,20 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      <InstructionsModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+      <ReportsModal 
+        isOpen={isReportsOpen} 
+        onClose={() => setIsReportsOpen(false)} 
+      />
+      <UserSettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        currentUser={user.cn}
+        initialSettings={{ pc: 'VNC10', thin: 'WTRC' }}
+      />
     </div>
   );
 }

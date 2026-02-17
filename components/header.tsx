@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useTheme } from '../context/ThemeContext';
-import { UserIdentity } from '../types';
+import { useTheme } from '../app/context/ThemeContext';
+import { UserIdentity } from '../app/types';
+import { apiFetch } from '../services/api';
 
 export default function HeaderComponent() {
   const [user, setUser] = useState(null);
@@ -12,9 +13,9 @@ export default function HeaderComponent() {
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    fetch('https://dc1.dallari.biz/api/auth/me', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => setUser(data));
+    apiFetch('/api/auth/me')
+      .then(data => setUser(data)) 
+      .catch(error => console.error("Ошибка при получении данных пользователя:", error)); // Добавил обработку ошибок
   }, []);
 
   const userNameDisplay = user?.isAuthenticated ? user!.userName.split('\\').pop() : 'Войти';

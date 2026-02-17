@@ -1,15 +1,4 @@
 export interface FileSystemItem {
-  id: string;
-  name: string;
-  hasChildren: boolean;
-  children?: FileSystemItem[];
-}
-export interface UserIdentity {
-  userName: string;
-  isAuthenticated: boolean;
-  authType: string;
-}
-export interface FileSystemItem {
   name: string;
   type: 'Directory' | 'File';
   children?: FileSystemItem[];
@@ -17,6 +6,20 @@ export interface FileSystemItem {
   relativePath?: string;
   formattedSize?: string;
 }
+export interface UserIdentity {
+  userName: string;
+  isAuthenticated: boolean;
+  authType: string;
+}
+
+
+
+
+
+
+
+
+
 
 export const CONNECTION_OPTIONS = {
   Any: "Anydesk Remote",

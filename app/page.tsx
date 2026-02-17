@@ -1,16 +1,15 @@
-import FileSystemItemComponent from './_components/FileSystemItem';
+import { apiFetch } from '@/services/api';
+import FileSystemItemComponent from '../components/FileSystemItem';
 import { FileSystemItem } from './types/index';
 
-async function getFileSystemData(): Promise<FileSystemItem[]> {
-  const res = await fetch('https://dc1.dallari.biz/api/home/files', { 
-    cache: 'no-store'
-  });
-
-  if (!res.ok) {
-    throw new Error('Ошибка при загрузке файлов');
-  }
-
-  return res.json();
+async function getFileSystemData(): Promise<FileSystemItem[]> { 
+  const data = await apiFetch<FileSystemItem[]>('/api/home/files', { 
+    cache: 'no-store', 
+    headers: { 
+      'Connection': 'close', 
+    }, 
+  }); 
+  return data;
 }
 
 export default async function HomePage() {

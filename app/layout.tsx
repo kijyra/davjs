@@ -1,8 +1,9 @@
-
 import './global.css';
 import type { Metadata } from 'next';
-import HeaderComponent from './components/header'; 
+import HeaderComponent from '../components/header'; 
 import { ThemeProvider } from './context/ThemeContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BootstrapClient from '../components/BootstrapClient';
 
 export const metadata: Metadata = {
   title: 'Главная | davproj', 
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="ru"> 
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -23,6 +24,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <BootstrapClient />
           <HeaderComponent />
           
           <div className="container">
