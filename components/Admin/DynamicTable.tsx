@@ -28,7 +28,7 @@ import PrinterModelModal from '../EntityModals/Printer/PrinterModelModal';
 import PrinterModal from '../EntityModals/Printer/PrinterModelModal';
 import UserModal from '../EntityModals/User/UserModal';
 import ADUserUpdateModal from '../EntityModals/User/ADUserModal';
-
+ 
 const deleteApiMap: Record<string, (id: number) => Promise<any>> = {
   Locations: deleteLocation,
   Buildings: deleteBuilding,
