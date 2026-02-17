@@ -13,7 +13,6 @@ jobs:
         with:
           node-version: '20'
       - run: npm ci
-      - run: npm ci
       - name: Generate Prisma Client
         run: npx prisma generate
       - run: npm run build

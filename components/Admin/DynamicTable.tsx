@@ -14,6 +14,8 @@ import {
   deleteCartridge,
   deletePrinterModel,
   deletePrinter,
+  deleteUser,
+  deleteADUser,
 } from '@/services/delete';
 
 import LocationModal from '../EntityModals/Geo/LocationModal';
