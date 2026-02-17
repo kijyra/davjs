@@ -15,7 +15,7 @@ jobs:
       - run: npm ci
       - run: npm ci
       - name: Generate Prisma Client
-         run: npx prisma generate
+        run: npx prisma generate
       - run: npm run build
       - name: Upload artifact (server files)
         uses: actions/upload-artifact@v4
@@ -27,7 +27,7 @@ jobs:
             package.json
             package-lock.json
             next.config.js
-            # при необходимости: .env.production и т.д.
+            # пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: .env.production пїЅ пїЅ.пїЅ.
 
   deploy:
     needs: build
@@ -42,7 +42,7 @@ jobs:
       - name: Deploy Next.js app
         run: |
           $target = "C:\deploy\davjs"
-          # Очистка (кроме node_modules, если они уже есть)
+          # пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ node_modules, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ)
           if (Test-Path $target) {
             Get-ChildItem -Path $target -Exclude node_modules | Remove-Item -Recurse -Force
           } else {
@@ -50,10 +50,10 @@ jobs:
           }
           Copy-Item "./frontend-server/*" $target -Recurse -Force
 
-          # Установка зависимостей
+          # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
           Set-Location $target
           npm ci --production
 
-          # Перезапуск службы (предполагаем, что она называется "MyNextApp")
+          # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "MyNextApp")
           Restart-Service -Name "DavJS" -ErrorAction Stop
           Write-Host "DavJS service restarted."
