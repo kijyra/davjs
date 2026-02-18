@@ -27,9 +27,15 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
           </span>
           {isOpen && item.children && (
             <ul className="list-group ms-3 mt-1 shadow-sm">
-              {item.children.map((child, idx) => (
-                <FileSystemItemComponent key={idx} item={child} />
-              ))}
+              {[...item.children]
+                .sort((a, b) => {
+                  if (a.type === 'Directory' && b.type !== 'Directory') return -1;
+                  if (a.type !== 'Directory' && b.type === 'Directory') return 1;
+                  return a.name.localeCompare(b.name);
+                })
+                .map((child, idx) => (
+                  <FileSystemItemComponent key={idx} item={child} />
+                ))}
             </ul>
           )}
         </>
