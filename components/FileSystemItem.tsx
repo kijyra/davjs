@@ -27,20 +27,24 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
           </span>
           {isOpen && item.children && (
             <ul className="list-group ms-3 mt-1 shadow-sm">
-              {[...item.children]
-                .sort((a, b) => {
-                  if (a.type === 'Directory' && b.type !== 'Directory') return -1;
-                  if (a.type !== 'Directory' && b.type === 'Directory') return 1;
+              {(() => {
+                const folders = item.children.filter(child => child.type === 'Directory');
+                const files = item.children.filter(child => child.type !== 'Directory');
+                const sortedFolders = folders.sort((a, b) => a.name.localeCompare(b.name));
 
-                  const nameA = a.name.toLowerCase();
-                  const nameB = b.name.toLowerCase();
-                  if (nameA < nameB) return -1;
-                  if (nameA > nameB) return 1;
-                  return 0;
-                })
-                .map((child, idx) => (
+                const sortedFiles = files.sort((a, b) => {
+                  const extA = a.fileExtension || '';
+                  const extB = b.fileExtension || '';
+                  const extCompare = extA.localeCompare(extB);
+                  if (extCompare !== 0) return extCompare;
+                  return a.name.localeCompare(b.name);
+                });
+
+                const allSorted = [...sortedFolders, ...sortedFiles];
+                return allSorted.map((child, idx) => (
                   <FileSystemItemComponent key={idx} item={child} />
-                ))}
+                ));
+              })()}
             </ul>
           )}
         </>
