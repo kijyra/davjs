@@ -21,12 +21,12 @@ jobs:
         with:
           name: frontend-server
           path: |
-            .next
-            public
-            package.json
-            package-lock.json
-            next.config.js
-            # ��� �������������: .env.production � �.�.
+            .
+            !node_modules
+            !.git
+            !.github
+            !.vscode
+            !.next/cache
 
   deploy:
     needs: build
@@ -37,22 +37,25 @@ jobs:
         with:
           name: frontend-server
           path: ./frontend-server
-
+      
       - name: Deploy Next.js app
         run: |
           $target = "C:\deploy\davjs"
-          # ������� (����� node_modules, ���� ��� ��� ����)
+          # Очистка целевой папки (кроме node_modules)
           if (Test-Path $target) {
             Get-ChildItem -Path $target -Exclude node_modules | Remove-Item -Recurse -Force
           } else {
             New-Item -ItemType Directory -Path $target -Force
           }
-          Copy-Item "./frontend-server/*" $target -Recurse -Force
 
-          # ��������� ������������
+          # Копирование всех файлов из артефакта, включая скрытые (.next)
+          robocopy "./frontend-server" $target /E /IS /IT /NP
+          if ($LASTEXITCODE -ge 8) { throw "Robocopy failed with exit code $LASTEXITCODE" }
+
+          # Установка зависимостей
           Set-Location $target
           npm ci --production
 
-          # ���������� ������ (������������, ��� ��� ���������� "MyNextApp")
-          Restart-Service -Name "DavJS" -ErrorAction Stop
-          Write-Host "DavJS service restarted."
+          # Перезапуск приложения через PM2 (не Windows-службу)
+          pm2 restart DavJS
+          Write-Host "DavJS restarted via PM2."
