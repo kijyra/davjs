@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'https://dc1.dallari.biz:3001';
+const API_BASE_URL = 'https://dc1.dallari.biz:3002';
 
 export async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
