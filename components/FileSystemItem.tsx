@@ -35,11 +35,13 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
         </>
       ) : (
         <div className="d-flex justify-content-between align-items-center">
-          <span>{getIcon(item)} {item.name}</span>
           <a 
-            href={`${item.relativePath}`}
+            href={item.relativePath} 
             download 
-            className="btn btn-outline-primary btn-sm">
+            className="text-decoration-none text-reset" 
+            style={{ cursor: 'pointer' }}
+          >
+            {getIcon(item)} {item.name}
             {item.formattedSize}
           </a>
         </div>
