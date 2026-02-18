@@ -3,7 +3,7 @@ import FileSystemItemComponent from '../components/FileSystemItem';
 import { FileSystemItem } from './types/index';
 
 async function getFileSystemData(): Promise<FileSystemItem[]> { 
-  const data = await apiFetch<FileSystemItem[]>('/api/home/files', { 
+  const data = await apiFetch<FileSystemItem[]>('https://localhost:3001/api/home/files', { 
     cache: 'no-store', 
     headers: { 
       'Connection': 'close', 
