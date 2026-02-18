@@ -41,25 +41,20 @@ jobs:
       - name: Deploy Next.js app
         run: |
           $target = "C:\deploy\davjs"
-
-          # Останавливаем приложение (если запущено)
           pm2 stop DavJS --silent
 
-          # Очистка целевой папки, кроме node_modules
           if (Test-Path $target) {
             Get-ChildItem -Path $target -Exclude node_modules | Remove-Item -Recurse -Force -ErrorAction Stop
           } else {
             New-Item -ItemType Directory -Path $target -Force
           }
 
-          # Копирование всех файлов из артефакта (включая скрытые .next)
           robocopy "./frontend-server" $target /E /IS /IT /NP
           if ($LASTEXITCODE -ge 8) { throw "Robocopy failed with exit code $LASTEXITCODE" }
 
-          # Установка production-зависимостей
           Set-Location $target
-          npm ci --production
+          npm ci
+          npx prisma generate
 
-          # Перезапуск приложения через PM2
           pm2 restart DavJS
           Write-Host "DavJS restarted via PM2."

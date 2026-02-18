@@ -1,15 +1,17 @@
-import { apiFetch } from '@/services/api';
 import FileSystemItemComponent from '../components/FileSystemItem';
 import { FileSystemItem } from './types/index';
 
-async function getFileSystemData(): Promise<FileSystemItem[]> { 
-  const data = await apiFetch<FileSystemItem[]>('/api/home/files', { 
-    cache: 'no-store', 
-    headers: { 
-      'Connection': 'close', 
-    }, 
-  }); 
-  return data;
+async function getFileSystemData(): Promise<FileSystemItem[]> {
+  const res = await fetch('http://dc1.dallari.biz:3002/api/home/files', {
+    cache: 'no-store',
+    headers: {
+      'Connection': 'close',
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`API request failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
 }
 
 export default async function HomePage() {
