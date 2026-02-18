@@ -11,18 +11,18 @@ interface LocationModalProps {
 }
 
 export default function LocationModal({ isOpen, onClose, onSuccess, initialData }: LocationModalProps) {
-  const [formData, setFormData] = useState({ Name: '', Address: '' });
-  const [errors, setErrors] = useState<{ Name?: string; Address?: string }>({});
+  const [formData, setFormData] = useState({ name: '', address: '' });
+  const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Name: initialData.Name || '',
-        Address: initialData.Address || '',
+        name: initialData.Name || '',
+        address: initialData.Address || '',
       });
     } else {
-      setFormData({ Name: '', Address: '' });
+      setFormData({ name: '', address: '' });
     }
     setErrors({});
   }, [initialData]);
@@ -40,8 +40,8 @@ export default function LocationModal({ isOpen, onClose, onSuccess, initialData 
 
     const url = initialData ? '/Geo/LocationEdit' : '/Geo/LocationAdd';
     const formBody = new FormData();
-    formBody.append('Name', formData.Name);
-    formBody.append('Address', formData.Address);
+    formBody.append('Name', formData.name);
+    formBody.append('Address', formData.address);
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
     }
@@ -89,32 +89,32 @@ export default function LocationModal({ isOpen, onClose, onSuccess, initialData 
               <div className="form-floating mb-3">
                 <input
                   type="text"
-                  className={`form-control ${errors.Name ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                   id="Name"
                   name="Name"
                   placeholder="Название"
-                  value={formData.Name}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   disabled={loading}
                 />
                 <label htmlFor="Name">Название</label>
-                {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
+                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
               </div>
 
               <div className="form-floating mb-3">
                 <input
                   type="text"
-                  className={`form-control ${errors.Address ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                   id="Address"
                   name="Address"
                   placeholder="Адрес"
-                  value={formData.Address}
+                  value={formData.address}
                   onChange={handleChange}
                   disabled={loading}
                 />
                 <label htmlFor="Address">Адрес</label>
-                {errors.Address && <div className="invalid-feedback">{errors.Address}</div>}
+                {errors.address && <div className="invalid-feedback">{errors.address}</div>}
               </div>
             </div>
             <div className="modal-footer">

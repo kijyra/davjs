@@ -1,4 +1,3 @@
-// components/Admin/modals/UserModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,7 +8,7 @@ interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: any; // данные редактируемого пользователя или null для добавления
+  initialData?: any;
 }
 
 export default function UserModal({ isOpen, onClose, onSuccess, initialData }: UserModalProps) {
@@ -22,10 +21,10 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
     PrinterId: '',
     WorkplaceId: '',
   });
-  const [adUsers, setAdUsers] = useState<{ Id: number; Cn: string }[]>([]);
-  const [workplaces, setWorkplaces] = useState<{ Id: number; Name: string }[]>([]);
-  const [printers, setPrinters] = useState<{ Id: number; PrinterName: string }[]>([]);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [adUsers, setAdUsers] = useState<{ id: number; cn: string }[]>([]);
+  const [workplaces, setWorkplaces] = useState<{ id: number; name: string }[]>([]);
+  const [printers, setPrinters] = useState<{ id: number; printerName: string }[]>([]);
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [loading, setLoading] = useState(false);
   const [isADUserModalOpen, setIsADUserModalOpen] = useState(false);
   const [editingADUser, setEditingADUser] = useState<any>(null);
@@ -33,9 +32,9 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ Id: number; Cn: string }[]>('/User/ADUser'),
-        apiFetch<{ Id: number; Name: string }[]>('/View/Workplace'),
-        apiFetch<{ Id: number; PrinterName: string }[]>('/Printer/Printer'),
+        apiFetch<{ id: number; cn: string }[]>('/User/ADUser'),
+        apiFetch<{ id: number; name: string }[]>('/View/Workplace'),
+        apiFetch<{ id: number; printerName: string }[]>('/Printer/Printer'),
       ])
         .then(([adUsersData, workplacesData, printersData]) => {
           setAdUsers(adUsersData);
@@ -137,7 +136,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
   };
 
   const handleADUserModalSuccess = (newUser?: any) => {
-    apiFetch<{ Id: number; Cn: string }[]>('/User/ADUser')
+    apiFetch<{ id: number; cn: string }[]>('/User/ADUser')
       .then(data => {
         setAdUsers(data);
         if (newUser?.Id) {
@@ -307,7 +306,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
         isOpen={isADUserModalOpen}
         onClose={handleADUserModalClose}
         onSuccess={handleADUserModalSuccess}
-        initialData={editingADUser}
+        defaultIdentity={typeof editingADUser === 'string' ? editingADUser : "dallari\\"}
       />
     </div>
   );

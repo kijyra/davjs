@@ -72,7 +72,7 @@ export default function DynamicTable({ tableName, data, onRefresh }: any) {
 
     try {
       await deleteFn(id);
-      onRefresh(); // обновить таблицу после удаления
+      onRefresh();
     } catch (error) {
       console.error('Ошибка удаления:', error);
       alert('Не удалось удалить запись');
@@ -80,7 +80,7 @@ export default function DynamicTable({ tableName, data, onRefresh }: any) {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null); // null = режим добавления
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const handleAdd = () => {
     setEditingRecord(null);
@@ -98,7 +98,7 @@ export default function DynamicTable({ tableName, data, onRefresh }: any) {
   };
 
   const handleModalSuccess = () => {
-    onRefresh(); // обновить данные после добавления/редактирования
+    onRefresh();
     handleModalClose();
   };
 

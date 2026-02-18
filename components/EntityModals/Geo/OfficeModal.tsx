@@ -1,4 +1,3 @@
-// components/Admin/modals/OfficeModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,14 +11,14 @@ interface OfficeModalProps {
 }
 
 export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }: OfficeModalProps) {
-  const [formData, setFormData] = useState({ Name: '', FloorId: '' });
-  const [floors, setFloors] = useState<{ Id: number; FloorNum: string }[]>([]);
-  const [errors, setErrors] = useState<{ Name?: string; FloorId?: string }>({});
+  const [formData, setFormData] = useState({ name: '', floorId: '' });
+  const [floors, setFloors] = useState<{ id: number; floorNum: string }[]>([]);
+  const [errors, setErrors] = useState<{ name?: string; floorId?: string }>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ Id: number; FloorNum: string }[]>('/Geo/Floor')
+      apiFetch<{ id: number; floorNum: string }[]>('/Geo/Floor')
         .then(data => {
           console.log('Этажи загружены:', data);
           setFloors(data);
@@ -34,11 +33,11 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Name: initialData.Name || '',
-        FloorId: initialData.FloorId ? String(initialData.FloorId) : '',
+        name: initialData.Name || '',
+        floorId: initialData.FloorId ? String(initialData.FloorId) : '',
       });
     } else {
-      setFormData({ Name: '', FloorId: '' });
+      setFormData({ name: '', floorId: '' });
     }
     setErrors({});
   }, [initialData]);
@@ -56,9 +55,9 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
 
     const url = initialData ? '/Geo/OfficeEdit' : '/Geo/OfficeAdd';
     const formBody = new FormData();
-    formBody.append('Name', formData.Name);
-    if (formData.FloorId) {
-      formBody.append('FloorId', formData.FloorId);
+    formBody.append('Name', formData.name);
+    if (formData.floorId) {
+      formBody.append('FloorId', formData.floorId);
     }
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
@@ -107,26 +106,26 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
               <div className="form-floating mb-3">
                 <input
                   type="text"
-                  className={`form-control ${errors.Name ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                   id="Name"
                   name="Name"
                   placeholder="Название"
-                  value={formData.Name}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   disabled={loading}
                 />
                 <label htmlFor="Name">Название</label>
-                {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
+                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
               </div>
 
               <div className="input-group">
                 <div className="form-floating flex-grow-1">
                   <select
-                    className={`form-select ${errors.FloorId ? 'is-invalid' : ''}`}
+                    className={`form-select ${errors.floorId ? 'is-invalid' : ''}`}
                     id="FloorId"
                     name="FloorId"
-                    value={formData.FloorId}
+                    value={formData.floorId}
                     onChange={handleChange}
                     disabled={loading}
                   >
@@ -136,7 +135,7 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
                     ))}
                   </select>
                   <label htmlFor="FloorId">Выберите этаж</label>
-                  {errors.FloorId && <div className="invalid-feedback">{errors.FloorId}</div>}
+                  {errors.floorId && <div className="invalid-feedback">{errors.floorId}</div>}
                 </div>
 
               </div>

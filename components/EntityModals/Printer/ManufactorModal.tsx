@@ -1,4 +1,3 @@
-// components/Admin/modals/ManufacturerModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,22 +7,21 @@ interface ManufacturerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: any; // данные редактируемого производителя или null для добавления
+  initialData?: any;
 }
 
 export default function ManufacturerModal({ isOpen, onClose, onSuccess, initialData }: ManufacturerModalProps) {
-  const [formData, setFormData] = useState({ Name: '' });
-  const [errors, setErrors] = useState<{ Name?: string }>({});
+  const [formData, setFormData] = useState({ name: '' });
+  const [errors, setErrors] = useState<{ name?: string }>({});
   const [loading, setLoading] = useState(false);
 
-  // Заполнение формы при редактировании
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Name: initialData.Name || '',
+        name: initialData.Name || '',
       });
     } else {
-      setFormData({ Name: '' });
+      setFormData({ name: '' });
     }
     setErrors({});
   }, [initialData]);
@@ -41,7 +39,7 @@ export default function ManufacturerModal({ isOpen, onClose, onSuccess, initialD
 
     const url = initialData ? '/Printer/ManufactorEdit' : '/Printer/ManufactorAdd';
     const formBody = new FormData();
-    formBody.append('Name', formData.Name);
+    formBody.append('Name', formData.name);
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
     }
@@ -89,17 +87,17 @@ export default function ManufacturerModal({ isOpen, onClose, onSuccess, initialD
               <div className="form-floating">
                 <input
                   type="text"
-                  className={`form-control ${errors.Name ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                   id="Name"
                   name="Name"
                   placeholder="Название производителя"
-                  value={formData.Name}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   disabled={loading}
                 />
                 <label htmlFor="Name">Название производителя</label>
-                {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
+                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
               </div>
             </div>
             <div className="modal-footer">

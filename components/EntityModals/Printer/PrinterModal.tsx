@@ -1,4 +1,3 @@
-// components/Admin/modals/PrinterModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,30 +7,30 @@ interface PrinterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: any; // данные редактируемого принтера или null для добавления
+  initialData?: any;
 }
 
 export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }: PrinterModalProps) {
   const [formData, setFormData] = useState({
-    PrinterName: '',
-    PrinterModelId: '',
-    IP: '',
-    HostName: '',
-    PrintCount: '',
-    ScanCount: '',
-    LastFuserRepair: '',
-    WorkplaceId: '',
+    printerName: '',
+    printerModelId: '',
+    iP: '',
+    hostName: '',
+    printCount: '',
+    scanCount: '',
+    lastFuserRepair: '',
+    workplaceId: '',
   });
-  const [models, setModels] = useState<{ Id: number; Name: string }[]>([]);
-  const [workplaces, setWorkplaces] = useState<{ Id: number; Name: string }[]>([]);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [models, setModels] = useState<{ id: number; name: string }[]>([]);
+  const [workplaces, setWorkplaces] = useState<{ id: number; name: string }[]>([]);
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ Id: number; Name: string }[]>('/Printer/PrinterModel'),
-        apiFetch<{ Id: number; Name: string }[]>('/View/Workplace'),
+        apiFetch<{ id: number; name: string }[]>('/Printer/PrinterModel'),
+        apiFetch<{ id: number; name: string }[]>('/View/Workplace'),
       ])
         .then(([modelsData, workplacesData]) => {
           setModels(modelsData);
@@ -47,28 +46,25 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
   useEffect(() => {
     if (initialData) {
       setFormData({
-        PrinterName: initialData.PrinterName || '',
-        PrinterModelId: initialData.PrinterModelId ? String(initialData.PrinterModelId) : '',
-        IP: initialData.IP || '',
-        HostName: initialData.HostName || '',
-        PrintCount: initialData.PrintCount !== null && initialData.PrintCount !== undefined ? String(initialData.PrintCount) : '',
-        ScanCount: initialData.ScanCount !== null && initialData.ScanCount !== undefined ? String(initialData.ScanCount) : '',
-        LastFuserRepair: initialData.LastFuserRepair || '',
-        // Если связь с рабочим местом идёт через поле PrinterId в таблице Workplaces,
-        // то initialData может содержать WorkplaceId, но в модели Printer его нет.
-        // Предположим, что API возвращает поле WorkplaceId для выбранного рабочего места.
-        WorkplaceId: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
+        printerName: initialData.PrinterName || '',
+        printerModelId: initialData.PrinterModelId ? String(initialData.PrinterModelId) : '',
+        iP: initialData.IP || '',
+        hostName: initialData.HostName || '',
+        printCount: initialData.PrintCount !== null && initialData.PrintCount !== undefined ? String(initialData.PrintCount) : '',
+        scanCount: initialData.ScanCount !== null && initialData.ScanCount !== undefined ? String(initialData.ScanCount) : '',
+        lastFuserRepair: initialData.LastFuserRepair || '',
+        workplaceId: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
       });
     } else {
       setFormData({
-        PrinterName: '',
-        PrinterModelId: '',
-        IP: '',
-        HostName: '',
-        PrintCount: '',
-        ScanCount: '',
-        LastFuserRepair: '',
-        WorkplaceId: '',
+        printerName: '',
+        printerModelId: '',
+        iP: '',
+        hostName: '',
+        printCount: '',
+        scanCount: '',
+        lastFuserRepair: '',
+        workplaceId: '',
       });
     }
     setErrors({});
@@ -87,14 +83,14 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
 
     const url = initialData ? '/Printer/PrinterEdit' : '/Printer/PrinterAdd';
     const formBody = new FormData();
-    formBody.append('PrinterName', formData.PrinterName);
-    if (formData.PrinterModelId) formBody.append('PrinterModelId', formData.PrinterModelId);
-    formBody.append('IP', formData.IP);
-    formBody.append('HostName', formData.HostName);
-    if (formData.PrintCount) formBody.append('PrintCount', formData.PrintCount);
-    if (formData.ScanCount) formBody.append('ScanCount', formData.ScanCount);
-    formBody.append('LastFuserRepair', formData.LastFuserRepair);
-    if (formData.WorkplaceId) formBody.append('WorkplaceId', formData.WorkplaceId);
+    formBody.append('PrinterName', formData.printerName);
+    if (formData.printerModelId) formBody.append('PrinterModelId', formData.printerModelId);
+    formBody.append('IP', formData.iP);
+    formBody.append('HostName', formData.hostName);
+    if (formData.printCount) formBody.append('PrintCount', formData.printCount);
+    if (formData.scanCount) formBody.append('ScanCount', formData.scanCount);
+    formBody.append('LastFuserRepair', formData.lastFuserRepair);
+    if (formData.workplaceId) formBody.append('WorkplaceId', formData.workplaceId);
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
     }
@@ -139,7 +135,6 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
           </div>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
-              {/* Вывод общих ошибок валидации (если есть) */}
               {errors.Summary && <div className="alert alert-danger">{errors.Summary}</div>}
 
               <div className="form-floating mb-3">
@@ -149,7 +144,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   id="PrinterName"
                   name="PrinterName"
                   placeholder="Название принтера"
-                  value={formData.PrinterName}
+                  value={formData.printerName}
                   onChange={handleChange}
                   required
                   disabled={loading}
@@ -163,14 +158,14 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   className={`form-select ${errors.PrinterModelId ? 'is-invalid' : ''}`}
                   id="PrinterModelId"
                   name="PrinterModelId"
-                  value={formData.PrinterModelId}
+                  value={formData.printerModelId}
                   onChange={handleChange}
                   required
                   disabled={loading}
                 >
                   <option value="">-- Выберите модель принтера --</option>
                   {models.map(m => (
-                    <option key={m.Id} value={m.Id}>{m.Name}</option>
+                    <option key={m.id} value={m.id}>{m.name}</option>
                   ))}
                 </select>
                 <label htmlFor="PrinterModelId">Выберите модель принтера</label>
@@ -184,7 +179,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   id="IP"
                   name="IP"
                   placeholder="IP-адрес"
-                  value={formData.IP}
+                  value={formData.iP}
                   onChange={handleChange}
                   required
                   disabled={loading}
@@ -200,7 +195,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   id="HostName"
                   name="HostName"
                   placeholder="Hostname"
-                  value={formData.HostName}
+                  value={formData.hostName}
                   onChange={handleChange}
                   disabled={loading}
                 />
@@ -217,7 +212,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                       id="PrintCount"
                       name="PrintCount"
                       placeholder="Напечатано"
-                      value={formData.PrintCount}
+                      value={formData.printCount}
                       onChange={handleChange}
                       disabled={loading}
                     />
@@ -233,7 +228,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                       id="ScanCount"
                       name="ScanCount"
                       placeholder="Отсканировано"
-                      value={formData.ScanCount}
+                      value={formData.scanCount}
                       onChange={handleChange}
                       disabled={loading}
                     />
@@ -250,7 +245,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   id="LastFuserRepair"
                   name="LastFuserRepair"
                   placeholder="Последний ремонт печи"
-                  value={formData.LastFuserRepair}
+                  value={formData.lastFuserRepair}
                   onChange={handleChange}
                   disabled={loading}
                 />
@@ -263,13 +258,13 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
                   className={`form-select ${errors.WorkplaceId ? 'is-invalid' : ''}`}
                   id="WorkplaceId"
                   name="WorkplaceId"
-                  value={formData.WorkplaceId}
+                  value={formData.workplaceId}
                   onChange={handleChange}
                   disabled={loading}
                 >
                   <option value="">-- Не выбрано --</option>
                   {workplaces.map(w => (
-                    <option key={w.Id} value={w.Id}>{w.Name}</option>
+                    <option key={w.id} value={w.id}>{w.name}</option>
                   ))}
                 </select>
                 <label htmlFor="WorkplaceId">Выберите рабочее место</label>

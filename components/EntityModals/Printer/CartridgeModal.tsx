@@ -1,4 +1,3 @@
-// components/Admin/modals/CartridgeModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,19 +7,18 @@ interface CartridgeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: any; // данные редактируемого картриджа или null для добавления
+  initialData?: any;
 }
 
 export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData }: CartridgeModalProps) {
-  const [formData, setFormData] = useState({ Model: '', Yield: '', ManufactorId: '' });
-  const [manufacturers, setManufacturers] = useState<{ Id: number; Name: string }[]>([]);
-  const [errors, setErrors] = useState<{ Model?: string; Yield?: string; ManufactorId?: string }>({});
+  const [formData, setFormData] = useState({ model: '', yield: '', manufactorId: '' });
+  const [manufacturers, setManufacturers] = useState<{ id: number; name: string }[]>([]);
+  const [errors, setErrors] = useState<{ model?: string; yield?: string; manufactorId?: string }>({});
   const [loading, setLoading] = useState(false);
 
-  // Загрузка списка производителей при открытии
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ Id: number; Name: string }[]>('/Printer/Manufactor')
+      apiFetch<{ id: number; name: string }[]>('/Printer/Manufactor')
         .then(data => {
           console.log('Производители загружены:', data);
           setManufacturers(data);
@@ -32,16 +30,15 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
     }
   }, [isOpen]);
 
-  // Заполнение формы при редактировании
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Model: initialData.Model || '',
-        Yield: initialData.Yield !== null && initialData.Yield !== undefined ? String(initialData.Yield) : '',
-        ManufactorId: initialData.ManufactorId ? String(initialData.ManufactorId) : '',
+        model: initialData.Model || '',
+        yield: initialData.Yield !== null && initialData.Yield !== undefined ? String(initialData.Yield) : '',
+        manufactorId: initialData.ManufactorId ? String(initialData.ManufactorId) : '',
       });
     } else {
-      setFormData({ Model: '', Yield: '', ManufactorId: '' });
+      setFormData({ model: '', yield: '', manufactorId: '' });
     }
     setErrors({});
   }, [initialData]);
@@ -59,12 +56,12 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
 
     const url = initialData ? '/Printer/CartridgeEdit' : '/Printer/CartridgeAdd';
     const formBody = new FormData();
-    formBody.append('Model', formData.Model);
-    if (formData.Yield) {
-      formBody.append('Yield', formData.Yield);
+    formBody.append('Model', formData.model);
+    if (formData.yield) {
+      formBody.append('Yield', formData.yield);
     }
-    if (formData.ManufactorId) {
-      formBody.append('ManufactorId', formData.ManufactorId);
+    if (formData.manufactorId) {
+      formBody.append('ManufactorId', formData.manufactorId);
     }
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
@@ -110,46 +107,44 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
           </div>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
-              {/* Поле модели картриджа */}
+
               <div className="form-floating mb-3">
                 <input
                   type="text"
-                  className={`form-control ${errors.Model ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.model ? 'is-invalid' : ''}`}
                   id="Model"
                   name="Model"
                   placeholder="Название картриджа"
-                  value={formData.Model}
+                  value={formData.model}
                   onChange={handleChange}
                   required
                   disabled={loading}
                 />
                 <label htmlFor="Model">Название картриджа</label>
-                {errors.Model && <div className="invalid-feedback">{errors.Model}</div>}
+                {errors.model && <div className="invalid-feedback">{errors.model}</div>}
               </div>
 
-              {/* Поле ёмкости картриджа */}
               <div className="form-floating mb-3">
                 <input
                   type="text"
-                  className={`form-control ${errors.Yield ? 'is-invalid' : ''}`}
+                  className={`form-control ${errors.yield ? 'is-invalid' : ''}`}
                   id="Yield"
                   name="Yield"
                   placeholder="Ёмкость картриджа"
-                  value={formData.Yield}
+                  value={formData.yield}
                   onChange={handleChange}
                   disabled={loading}
                 />
                 <label htmlFor="Yield">Ёмкость картриджа</label>
-                {errors.Yield && <div className="invalid-feedback">{errors.Yield}</div>}
+                {errors.yield && <div className="invalid-feedback">{errors.yield}</div>}
               </div>
 
-              {/* Выбор производителя */}
               <div className="form-floating">
                 <select
-                  className={`form-select ${errors.ManufactorId ? 'is-invalid' : ''}`}
+                  className={`form-select ${errors.manufactorId ? 'is-invalid' : ''}`}
                   id="ManufactorId"
                   name="ManufactorId"
-                  value={formData.ManufactorId}
+                  value={formData.manufactorId}
                   onChange={handleChange}
                   disabled={loading}
                 >
@@ -159,7 +154,7 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
                   ))}
                 </select>
                 <label htmlFor="ManufactorId">Выберите производителя</label>
-                {errors.ManufactorId && <div className="invalid-feedback">{errors.ManufactorId}</div>}
+                {errors.manufactorId && <div className="invalid-feedback">{errors.manufactorId}</div>}
               </div>
             </div>
 

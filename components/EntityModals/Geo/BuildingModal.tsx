@@ -2,14 +2,24 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
 
+interface Location {
+  id: number;
+  name: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  errors?: string[];
+}
+
 export default function BuildingModal({ isOpen, onClose, onSuccess, initialData }: any) {
   const [formData, setFormData] = useState({ Name: '', LocationId: '' });
-  const [locations, setLocations] = useState<{ Id: number; Name: string }[]>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch('/Geo/Location')
+      apiFetch<Location[]>('/Geo/Location')
         .then(setLocations)
         .catch(console.error);
     }
@@ -40,7 +50,7 @@ export default function BuildingModal({ isOpen, onClose, onSuccess, initialData 
     if (initialData) body.append('Id', String(initialData.Id));
 
     try {
-      const res = await apiFetch(url, { method: 'POST', body });
+      const res = await apiFetch<ApiResponse>(url, { method: 'POST', body });
       if (res.success) {
         onSuccess();
         onClose();

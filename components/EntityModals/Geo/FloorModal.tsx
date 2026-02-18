@@ -1,4 +1,3 @@
-// components/Admin/modals/FloorModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,13 +12,13 @@ interface FloorModalProps {
 
 export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: FloorModalProps) {
   const [formData, setFormData] = useState({ floorNum: '', buildingId: '' });
-  const [buildings, setBuildings] = useState<{ Id: number; Name: string }[]>([]);
+  const [buildings, setBuildings] = useState<{ id: number; name: string }[]>([]);
   const [errors, setErrors] = useState<{ FloorNum?: string; BuildingId?: string }>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ Id: number; Name: string }[]>('/Geo/Building')
+      apiFetch<{ id: number; name: string }[]>('/Geo/Building')
         .then(data => {
           console.log('Здания загружены:', data);
           setBuildings(data);
@@ -34,11 +33,11 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        FloorNum: initialData.FloorNum || '',
-        BuildingId: initialData.BuildingId ? String(initialData.BuildingId) : '',
+        floorNum: initialData.FloorNum || '',
+        buildingId: initialData.BuildingId ? String(initialData.BuildingId) : '',
       });
     } else {
-      setFormData({ FloorNum: '', BuildingId: '' });
+      setFormData({ floorNum: '', buildingId: '' });
     }
     setErrors({});
   }, [initialData]);
@@ -56,9 +55,9 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
 
     const url = initialData ? '/Geo/FloorEdit' : '/Geo/FloorAdd';
     const formBody = new FormData();
-    formBody.append('FloorNum', formData.FloorNum);
-    if (formData.BuildingId) {
-      formBody.append('BuildingId', formData.BuildingId);
+    formBody.append('FloorNum', formData.floorNum);
+    if (formData.buildingId) {
+      formBody.append('BuildingId', formData.buildingId);
     }
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
@@ -111,7 +110,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
                   id="FloorNum"
                   name="FloorNum"
                   placeholder="Название этажа"
-                  value={formData.FloorNum}
+                  value={formData.floorNum}
                   onChange={handleChange}
                   required
                   disabled={loading}
@@ -126,7 +125,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
                     className={`form-select ${errors.BuildingId ? 'is-invalid' : ''}`}
                     id="BuildingId"
                     name="BuildingId"
-                    value={formData.BuildingId}
+                    value={formData.buildingId}
                     onChange={handleChange}
                     disabled={loading}
                   >

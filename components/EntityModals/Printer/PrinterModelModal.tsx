@@ -1,4 +1,3 @@
-// components/Admin/modals/PrinterModelModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +7,7 @@ interface PrinterModelModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  initialData?: any; // данные редактируемой модели или null для добавления
+  initialData?: any;
 }
 
 export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialData }: PrinterModelModalProps) {
@@ -17,7 +16,6 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
   const [errors, setErrors] = useState<{ Name?: string; CartridgeId?: string }>({});
   const [loading, setLoading] = useState(false);
 
-  // Загрузка списка картриджей при открытии
   useEffect(() => {
     if (isOpen) {
       apiFetch<any[]>('/Printer/Cartridge')
@@ -116,7 +114,6 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
           </div>
           <form onSubmit={handleSubmit}>
             <div className="modal-body">
-              {/* Наименование модели */}
               <div className="form-floating mb-3">
                 <input
                   type="text"
@@ -133,7 +130,6 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
                 {errors.Name && <div className="invalid-feedback">{errors.Name}</div>}
               </div>
 
-              {/* Чекбокс МФУ */}
               <div className="input-group flex-nowrap mb-3">
                 <div className="form-check">
                   <input
@@ -151,7 +147,6 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
                 </div>
               </div>
 
-              {/* Выбор картриджа */}
               <div className="form-floating">
                 <select
                   className={`form-select ${errors.CartridgeId ? 'is-invalid' : ''}`}
