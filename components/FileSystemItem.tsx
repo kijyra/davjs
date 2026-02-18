@@ -41,8 +41,8 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
             className="text-decoration-none text-reset" 
             style={{ cursor: 'pointer' }}
           >
-            {getIcon(item)} {item.name}
-            {item.formattedSize}
+            <span className="me-2">{getIcon(item)} {item.name}</span>
+            <span className="text-muted">{item.formattedSize}</span>
           </a>
         </div>
       )}
