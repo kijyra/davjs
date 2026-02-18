@@ -31,7 +31,12 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
                 .sort((a, b) => {
                   if (a.type === 'Directory' && b.type !== 'Directory') return -1;
                   if (a.type !== 'Directory' && b.type === 'Directory') return 1;
-                  return b.name.localeCompare(a.name);
+
+                  const nameA = a.name.toLowerCase();
+                  const nameB = b.name.toLowerCase();
+                  if (nameA < nameB) return -1;
+                  if (nameA > nameB) return 1;
+                  return 0;
                 })
                 .map((child, idx) => (
                   <FileSystemItemComponent key={idx} item={child} />
