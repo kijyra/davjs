@@ -41,8 +41,14 @@ export default function FileSystemItemComponent({ item }: { item: FileSystemItem
             className="text-decoration-none text-reset" 
             style={{ cursor: 'pointer' }}
           >
-            <span className="me-2">{getIcon(item)} {item.name}</span>
-            <span className="text-muted">{item.formattedSize}</span>
+            {getIcon(item)} {item.name}
+          </a>
+          <a 
+            href={item.relativePath} 
+            download 
+            className="btn btn-outline-primary btn-sm"
+          >
+            {item.formattedSize}
           </a>
         </div>
       )}
