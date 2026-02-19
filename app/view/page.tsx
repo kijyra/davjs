@@ -8,8 +8,7 @@ interface PageProps {
 export default async function ViewPage({ searchParams }: PageProps) {
   const { buildingId, floorId } = await searchParams;
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://dc1.dallari.biz:3001';
-  const url = new URL('/view/Data', baseUrl);
+  const url = new URL('/view/Data');
   if (buildingId) url.searchParams.append('buildingId', buildingId);
   if (floorId) url.searchParams.append('floorId', floorId);
 
