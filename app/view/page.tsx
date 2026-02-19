@@ -8,15 +8,18 @@ interface PageProps {
 export default async function ViewPage({ searchParams }: PageProps) {
   const { buildingId, floorId } = await searchParams;
 
-  const url = new URL('/view/Data');
-  if (buildingId) url.searchParams.append('buildingId', buildingId);
-  if (floorId) url.searchParams.append('floorId', floorId);
+  let endpoint = '/view/Data';
+  const params = new URLSearchParams();
+  if (buildingId) params.append('buildingId', buildingId);
+  if (floorId) params.append('floorId', floorId);
+  const queryString = params.toString();
+  if (queryString) endpoint += `?${queryString}`;
 
   const data = await apiFetch<{
     buildings: { id: number; name: string }[];
     selectedBuilding: any;
     selectedFloor: any;
-  }>(url.toString());
+  }>(endpoint);
 
   return <ViewClient {...data} />;
 }
