@@ -3,6 +3,8 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import WorkplaceDetails from '@/components/View/WorkplaceDetails';
+import { useState } from 'react';
 
 interface ViewClientProps {
   buildings: { id: number; name: string }[];
@@ -13,7 +15,17 @@ interface ViewClientProps {
 export default function ViewClient({ buildings, selectedBuilding, selectedFloor }: ViewClientProps) {
   const router = useRouter();
 
-  // Функция для построения URL с сохранением параметров
+
+  const [modalState, setModalState] = useState<{
+    type: string | null;
+    isOpen: boolean;
+    initialData?: any;
+  }>({ type: null, isOpen: false });
+
+  const openModal = (type: string, data?: any) => {
+    setModalState({ type, isOpen: true, initialData: data });
+  };
+
   const getLink = (params: { buildingId?: number; floorId?: number }) => {
     const search = new URLSearchParams();
     if (params.buildingId) search.set('buildingId', params.buildingId.toString());
@@ -133,47 +145,27 @@ export default function ViewClient({ buildings, selectedBuilding, selectedFloor 
                                 data-bs-parent={`#accordion-office-${office.id}`}
                               >
                                 <div className="accordion-body bg-body-tertiary">
-                                  {/* Здесь будет содержимое _WorkplaceDetails, пока упрощённо */}
-                                  <div className="row">
-                                    <div className="col-md-4">
-                                      <h6>Пользователь</h6>
-                                      <p>{wp.user?.fullName || 'Нет данных'}</p>
-                                      <p>{wp.user?.position}</p>
-                                      <p>Логин: {wp.user?.adUser?.cn}</p>
-                                    </div>
-                                    <div className="col-md-4">
-                                      <h6>Компьютер</h6>
-                                      {wp.pc ? (
-                                        <>
-                                          <p>Hostname: {wp.pc.hostname}</p>
-                                          <p>IP: {wp.pc.ip}</p>
-                                          <p>Домен: {wp.pc.domain ? 'Да' : 'Нет'}</p>
-                                          <p>Тонкий клиент: {wp.pc.think ? 'Да' : 'Нет'}</p>
-                                          {wp.pc.currentHardwareInfo && (
-                                            <>
-                                              <p>ОЗУ: {wp.pc.currentHardwareInfo.totalMemoryGB} GB</p>
-                                              <p>Диск: {wp.pc.currentHardwareInfo.diskInfo}</p>
-                                            </>
-                                          )}
-                                        </>
-                                      ) : (
-                                        <p>Нет данных</p>
-                                      )}
-                                    </div>
-                                    <div className="col-md-4">
-                                      <h6>Принтер</h6>
-                                      {wp.printer ? (
-                                        <>
-                                          <p>{wp.printer.printerName}</p>
-                                          <p>Модель: {wp.printer.printerModel?.name}</p>
-                                          <p>Картридж: {wp.printer.printerModel?.cartridge?.model}</p>
-                                          <p>Счётчик печати: {wp.printer.printCount}</p>
-                                        </>
-                                      ) : (
-                                        <p>Не назначен</p>
-                                      )}
-                                    </div>
-                                  </div>
+                                  <WorkplaceDetails
+                                    workplace={wp}
+                                    userSettings={{ defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' }} // получите из API или контекста
+                                    onEditUser={(user) => openModal('user', user)}
+                                    onEditPhone={(phone) => openModal('phone', phone)}
+                                    onEditPC={(pc) => openModal('pc', pc)}
+                                    onEditPrinter={(printer) => openModal('printer', printer)}
+                                    onHardwareInfo={(pc) => openModal('hardware', pc)}
+                                    onRequestUpdate={(hostname) => {
+                                      // вызвать API для обновления
+                                      console.log('Обновить ПК', hostname);
+                                    }}
+                                    onUpdateCounters={(printerId) => {
+                                      // вызвать API для обновления счётчиков
+                                      console.log('Обновить счётчики', printerId);
+                                    }}
+                                    onFuserRepair={(printerId) => {
+                                      // вызвать API для ремонта печи
+                                      console.log('Ремонт печи', printerId);
+                                    }}
+                                  />
                                 </div>
                               </div>
                             </div>

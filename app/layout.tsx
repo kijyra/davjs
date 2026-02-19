@@ -4,6 +4,8 @@ import HeaderComponent from '../components/header';
 import { ThemeProvider } from './context/ThemeContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BootstrapClient from '../components/BootstrapClient';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: 'Главная | davproj', 

@@ -2,10 +2,11 @@
 'use client';
 
 import React from 'react';
-import { CONNECTION_OPTIONS, CONNECTION_URLS } from '@/constants/connections'; // нужно создать
+import { CONNECTION_OPTIONS, CONNECTION_URLS } from '../../constants/connections';
+import { useVnc } from '../../hooks/usevnc';
 
 interface WorkplaceDetailsProps {
-  workplace: any; // данные рабочего места (формат из API)
+  workplace: any;
   userSettings?: {
     defaultPCConnection: string;
     thinkConnection: string;
@@ -34,6 +35,8 @@ export default function WorkplaceDetails({
 }: WorkplaceDetailsProps) {
   const { user, phone, pc, printer } = workplace;
 
+  const { connectVnc } = useVnc();
+  
   const renderMonitors = () => {
     if (!pc?.displayList?.length) return '—';
     const groups = pc.displayList.reduce((acc: any, m: any) => {
@@ -54,10 +57,15 @@ export default function WorkplaceDetails({
     return baseUrl ? baseUrl + ip : '#';
   };
 
-  // Обработчик VNC-клика (заглушка, позже заменится на реальный)
-  const handleVncClick = (pcId: number, ip: string, control: boolean, prompt: boolean) => {
-    alert(`VNC: pcId=${pcId}, ip=${ip}, control=${control}, prompt=${prompt}`);
-    return false; // предотвратить переход по href
+  const handleVncClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    pcId: number,
+    ip: string,
+    control: boolean,
+    prompt: boolean
+  ) => {
+    e.preventDefault();
+    connectVnc(pcId, ip, control, prompt, e.currentTarget as HTMLElement);
   };
 
   return (
@@ -294,7 +302,7 @@ export default function WorkplaceDetails({
 
                       {/* Кнопка подключения с выпадающим списком */}
                       <div className="d-grid">
-                        {pc && (
+                          {/* Кнопка с выпадающим списком */}
                           <div className="btn-group">
                             {(() => {
                               const defaultConn = pc.think
@@ -303,10 +311,7 @@ export default function WorkplaceDetails({
                               const defaultUrl = getConnectionUrl(defaultConn, pc.ip);
                               return (
                                 <>
-                                  <a
-                                    href={defaultUrl}
-                                    className="btn btn-sm btn-outline-primary"
-                                  >
+                                  <a href={defaultUrl} className="btn btn-sm btn-outline-primary">
                                     {CONNECTION_OPTIONS[defaultConn] || defaultConn}
                                   </a>
                                   <button
@@ -331,38 +336,36 @@ export default function WorkplaceDetails({
                                         if (isWtrcOrWeb) return null;
                                       }
 
-                                      let href = '#';
-                                      let onClick: any = undefined;
-
                                       if (isVnc) {
                                         const control = key[3] === '1';
                                         const prompt = key[4] === '1';
-                                        href = '#';
-                                        onClick = (e: React.MouseEvent) => {
-                                          e.preventDefault();
-                                          handleVncClick(pc.id, pc.ip, control, prompt);
-                                        };
+                                        return (
+                                          <a
+                                            key={key}
+                                            className="dropdown-item"
+                                            href="#"
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              connectVnc(pc.id, pc.ip, control, prompt);
+                                            }}
+                                          >
+                                            {label}
+                                          </a>
+                                        );
                                       } else {
-                                        href = getConnectionUrl(key, pc.ip);
+                                        const href = getConnectionUrl(key, pc.ip);
+                                        return (
+                                          <a key={key} className="dropdown-item" href={href}>
+                                            {label}
+                                          </a>
+                                        );
                                       }
-
-                                      return (
-                                        <a
-                                          key={key}
-                                          className="dropdown-item"
-                                          href={href}
-                                          onClick={onClick}
-                                        >
-                                          {label}
-                                        </a>
-                                      );
                                     })}
                                   </div>
                                 </>
                               );
                             })()}
                           </div>
-                        )}
                       </div>
                     </>
                   )}
