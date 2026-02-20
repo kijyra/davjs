@@ -1,8 +1,11 @@
-
-const API_BASE_URL = 'https://10.0.0.70:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://10.0.0.70:3001';
 
 export async function apiFetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const cleanBaseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  
+  const url = `${cleanBaseUrl}${cleanEndpoint}`;
+
   const defaultOptions: RequestInit = {
     credentials: 'include',
     ...options,
