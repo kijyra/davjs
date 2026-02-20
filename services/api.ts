@@ -6,6 +6,8 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit): Prom
   
   const url = `${cleanBaseUrl}${cleanEndpoint}`;
 
+  console.log('🚀 API Fetching URL:', url); 
+
   const defaultOptions: RequestInit = {
     credentials: 'include',
     ...options,
