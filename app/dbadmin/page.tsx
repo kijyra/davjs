@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getTableData } from '@/app/actions/db-actions' 
+import { getTableData } from './dbaction' // убедитесь в правильности пути
 import DynamicTable from '../../components/Admin/DynamicTable'
 
 const menu = [
@@ -13,7 +13,7 @@ const menu = [
 
 export default function AdminPage() {
   const [activeTable, setActiveTable] = useState('')
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any[]>([]) // ✅ явно указываем тип any[]
   const [loading, setLoading] = useState(false)
 
   const loadData = async (tableName: string) => {
