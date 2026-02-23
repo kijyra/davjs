@@ -13,7 +13,7 @@ const menu = [
 
 export default function AdminPage() {
   const [activeTable, setActiveTable] = useState('')
-  const [data, setData] = useState<any[]>([]) // ✅ явно указываем тип any[]
+  const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
   const loadData = async (tableName: string) => {
