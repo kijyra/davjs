@@ -7,5 +7,5 @@ export async function getTableData(tableName: string) {
     headers['X-API-Key'] = apiKey;
   }
 
-  return apiFetch<any[]>(`/Admin/GetTableData?tableName=${tableName}`, { headers });
+  return apiFetch<any[]>(`/api/Admin/GetTableData?tableName=${tableName}`, { headers });
 }

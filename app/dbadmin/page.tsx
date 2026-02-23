@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getTableData } from './dbaction' // убедитесь в правильности пути
+import { getTableData } from './dbaction'
 import DynamicTable from '../../components/Admin/DynamicTable'
 
 const menu = [

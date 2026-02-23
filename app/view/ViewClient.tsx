@@ -1,4 +1,3 @@
-// app/view/ViewClient.tsx
 'use client';
 
 import Link from 'next/link';
@@ -30,7 +29,7 @@ export default function ViewClient({ buildings, selectedBuilding, selectedFloor 
     const search = new URLSearchParams();
     if (params.buildingId) search.set('buildingId', params.buildingId.toString());
     if (params.floorId) search.set('floorId', params.floorId.toString());
-    return `/view?${search.toString()}`;
+    return `/api/view?${search.toString()}`;
   };
 
   return (
