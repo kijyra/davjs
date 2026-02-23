@@ -4,6 +4,7 @@
 import React from 'react';
 import { CONNECTION_OPTIONS, CONNECTION_URLS } from '../../constants/connections';
 import { useVnc } from '../../hooks/usevnc';
+import { apiFetch } from '@/services/api';
 
 interface WorkplaceDetailsProps {
   workplace: any;
@@ -57,15 +58,20 @@ export default function WorkplaceDetails({
     return baseUrl ? baseUrl + ip : '#';
   };
 
-  const handleVncClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    pcId: number,
-    ip: string,
-    control: boolean,
-    prompt: boolean
-  ) => {
-    e.preventDefault();
-    connectVnc(pcId, ip, control, prompt, e.currentTarget as HTMLElement);
+  const handleVNCConnect = async (pcId: number, fullControl: boolean, requestUser: boolean) => {
+    try {
+      const result = await apiFetch<any>('/api/VNC/Connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pcId, fullControl, requestUser })
+      });
+      if (result.uri) {
+        window.location.href = result.uri; // открыть VNC-клиент
+      }
+    } catch (error) {
+      console.error('VNC connection failed:', error);
+      alert('Не удалось подключиться к ПК');
+    }
   };
 
   return (
