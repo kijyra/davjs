@@ -1,39 +1,33 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { apiFetch } from '@/services/api';
 import ViewClient from './ViewClient';
-import { headers } from 'next/headers';
 
-interface PageProps {
-  searchParams: Promise<{ buildingId?: string; floorId?: string }>;
+interface ViewData {
+  buildings: { id: number; name: string }[];
+  selectedBuilding: any;
+  selectedFloor: any;
 }
 
-export default async function ViewPage({ searchParams }: PageProps) {
-  const { buildingId, floorId } = await searchParams;
+export default function ViewPage() {
+  const [data, setData] = useState<ViewData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const params = new URLSearchParams();
-  if (buildingId) params.append('buildingId', buildingId);
-  if (floorId) params.append('floorId', floorId);
-  
-  const queryString = params.toString();
-  const endpoint = `/api/view/Data${queryString ? `?${queryString}` : ''}`;
+  useEffect(() => {
+    apiFetch<ViewData>('/api/view/data', { cache: 'no-store' })
+      .then((data) => setData(data))
+      .catch((err) => {
+        console.error(err);
+        setError('Ошибка загрузки данных');
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-  const clientHeaders = await headers();
-  const cookie = clientHeaders.get('cookie') || '';
+  if (loading) return <div>Загрузка...</div>;
+  if (error) return <div>{error}</div>;
+  if (!data) return <div>Нет данных</div>;
 
-  try {
-    const data = await apiFetch<{
-      buildings: { id: number; name: string }[];
-      selectedBuilding: any;
-      selectedFloor: any;
-    }>(endpoint, {
-      headers: {
-        'Cookie': cookie,
-      },
-      cache: 'no-store', 
-    });
-
-    return <ViewClient {...data} />;
-  } catch (error) {
-    console.error("Failed to fetch data in ViewPage:", error);
-    return <div>Ошибка загрузки данных. Проверьте соединение с API.</div>;
-  }
+  return <ViewClient {...data} />;
 }
