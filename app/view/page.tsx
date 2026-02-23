@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { apiFetch } from '@/services/api';
 import ViewClient from './ViewClient';
+export const dynamic = 'force-dynamic';
 
 interface ViewData {
   buildings: { id: number; name: string }[];
