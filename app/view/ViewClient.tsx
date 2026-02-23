@@ -25,12 +25,12 @@ export default function ViewClient({ buildings, selectedBuilding, selectedFloor 
     setModalState({ type, isOpen: true, initialData: data });
   };
 
-  const getLink = (params: { buildingId?: number; floorId?: number }) => {
-    const search = new URLSearchParams();
-    if (params.buildingId) search.set('buildingId', params.buildingId.toString());
-    if (params.floorId) search.set('floorId', params.floorId.toString());
-    return `/api/view?${search.toString()}`;
-  };
+const getLink = (params: { buildingId?: number; floorId?: number }) => {
+  const search = new URLSearchParams();
+  if (params.buildingId) search.set('buildingId', params.buildingId.toString());
+  if (params.floorId) search.set('floorId', params.floorId.toString());
+  return `/view?${search.toString()}`;
+};
 
   return (
     <div className="container-fluid">
