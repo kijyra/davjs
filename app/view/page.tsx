@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { apiFetch } from '@/services/api';
 import ViewClient from './ViewClient';
-export const dynamic = 'force-dynamic';
 
 interface ViewData {
   buildings: { id: number; name: string }[];
@@ -13,6 +12,7 @@ interface ViewData {
 }
 
 export default function ViewPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const buildingId = searchParams.get('buildingId');
   const floorId = searchParams.get('floorId');
@@ -22,25 +22,27 @@ export default function ViewPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const params = new URLSearchParams();
-        if (buildingId) params.append('buildingId', buildingId);
-        if (floorId) params.append('floorId', floorId);
-        const query = params.toString() ? `?${params.toString()}` : '';
-        const result = await apiFetch<ViewData>(`/api/view/data${query}`, { cache: 'no-store' });
-        setData(result);
-      } catch (err) {
-        setError('Ошибка загрузки данных');
+    const params = new URLSearchParams();
+    if (buildingId) params.append('buildingId', buildingId);
+    if (floorId) params.append('floorId', floorId);
+    const query = params.toString() ? `?${params.toString()}` : '';
+
+    apiFetch<ViewData>(`/api/view/data${query}`, { cache: 'no-store' })
+      .then(setData)
+      .catch(err => {
         console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+        setError('Ошибка загрузки данных');
+      })
+      .finally(() => setLoading(false));
   }, [buildingId, floorId]);
+
+  // Автовыбор первого здания, если нет параметра buildingId
+  useEffect(() => {
+    if (data && data.buildings.length > 0 && !buildingId) {
+      const firstBuildingId = data.buildings[0].id;
+      router.push(`/view?buildingId=${firstBuildingId}`);
+    }
+  }, [data, buildingId, router]);
 
   if (loading) return <div>Загрузка...</div>;
   if (error) return <div>{error}</div>;

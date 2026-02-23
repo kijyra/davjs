@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import WorkplaceDetails from '@/components/View/WorkplaceDetails';
 import { useState } from 'react';
+import HardwareInfoModal from '@/components/View/HardwareInfoModal';
 
 interface ViewClientProps {
   buildings: { id: number; name: string }[];
@@ -181,6 +182,11 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
           )}
         </div>
       </div>
+      <HardwareInfoModal
+        pc={modalState.initialData}
+        show={modalState.isOpen && modalState.type === 'hardware'}
+        onClose={() => setModalState({ type: null, isOpen: false })}
+      />
     </div>
   );
 }

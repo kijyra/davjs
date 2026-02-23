@@ -35,7 +35,7 @@ export default function WorkplaceDetails({
   onFuserRepair,
 }: WorkplaceDetailsProps) {
   const { user, phone, pc, printer } = workplace;
-
+  
   const { connectVnc } = useVnc();
   
   const renderMonitors = () => {
