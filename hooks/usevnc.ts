@@ -23,16 +23,21 @@ export const useVnc = () => {
     const infoToast = toast.info("Проверка доступа...", { autoClose: false });
 
     try {
-      const queryParams = new URLSearchParams({
-        pcId: pcId.toString(),
-        fullControl: fullControl.toString(),
-        requestUser: requestUser.toString()
-      });
-      const endpoint = `/api/VNC/Connect?${queryParams}`;
+      const body = {
+        pcId,
+        fullControl,
+        requestUser
+      };
+
+      const endpoint = `/api/VNC/Connect`;
 
       const result = await apiFetch<VncResponse>(endpoint, {
         method: 'POST',
-        headers: { 'Accept': 'application/json' },
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
       });
 
       toast.dismiss(infoToast);

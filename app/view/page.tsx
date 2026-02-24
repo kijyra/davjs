@@ -36,7 +36,6 @@ export default function ViewPage() {
       .finally(() => setLoading(false));
   }, [buildingId, floorId]);
 
-  // Автовыбор первого здания, если нет параметра buildingId
   useEffect(() => {
     if (data && data.buildings.length > 0 && !buildingId) {
       const firstBuildingId = data.buildings[0].id;
