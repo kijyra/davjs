@@ -28,6 +28,8 @@ import PrinterModelModal from '../EntityModals/Printer/PrinterModelModal';
 import PrinterModal from '../EntityModals/Printer/PrinterModelModal';
 import UserModal from '../EntityModals/User/UserModal';
 import ADUserUpdateModal from '../EntityModals/User/ADUserModal';
+import PhoneModal from '../EntityModals/PP/PhoneModal';
+import PCModal from '../EntityModals/PP/PcModal';
  
 const deleteApiMap: Record<string, (id: number) => Promise<any>> = {
   Locations: deleteLocation,
@@ -40,6 +42,8 @@ const deleteApiMap: Record<string, (id: number) => Promise<any>> = {
   Printers: deletePrinter,
   Users: deleteUser,
   ADUsers: deleteADUser,
+  Phones: deletePhone,
+  PCs: deletePC,
 };
 
 const modalComponents: Record<string, React.ComponentType<any>> = {
@@ -52,7 +56,9 @@ const modalComponents: Record<string, React.ComponentType<any>> = {
   PrinterModels: PrinterModelModal,
   Printers: PrinterModal,
   Users: UserModal,
-  ADUsers: ADUserUpdateModal
+  ADUsers: ADUserUpdateModal,
+  Phones: PhoneModal,
+  PCs: PCModal,
 };
 
 interface SortConfig {
