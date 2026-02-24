@@ -32,7 +32,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        shell: pwsh
+        shell: powershell
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -43,19 +43,25 @@ jobs:
       - name: Deploy Next.js app
         run: |
           $target = "C:\deploy\davjs"
-          pm2 stop DavJS --silent
-
+          
+          # Остановка процесса
+          & pm2 stop DavJS --silent
+          
           if (Test-Path $target) {
             Get-ChildItem -Path $target -Exclude node_modules | Remove-Item -Recurse -Force -ErrorAction Stop
           } else {
             New-Item -ItemType Directory -Path $target -Force
           }
 
+          # Копирование файлов
           robocopy "./frontend-server" $target /E /IS /IT /NP
           if ($LASTEXITCODE -ge 8) { throw "Robocopy failed with exit code $LASTEXITCODE" }
 
           Set-Location $target
+          
+          # Установка зависимостей
           npm ci --production
 
-          pm2 restart DavJS || pm2 start npm --name "DavJS" -- start
+          # Перезапуск
+          & pm2 restart DavJS
           Write-Host "DavJS restarted via PM2."
