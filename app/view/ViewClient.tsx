@@ -153,18 +153,60 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                                     onEditPC={(pc) => openModal('pc', pc)}
                                     onEditPrinter={(printer) => openModal('printer', printer)}
                                     onHardwareInfo={(pc) => openModal('hardware', pc)}
-                                    onRequestUpdate={(hostname) => {
-                                      // вызвать API для обновления
-                                      console.log('Обновить ПК', hostname);
+                                    onRequestUpdate={async (hostname) => {
+                                      try {
+                                        const response = await fetch(`/api/hardware/request-update/${hostname}`, {
+                                          method: 'POST'
+                                        });
+                                        const result = await response.json();
+                                        
+                                        if (response.ok) {
+                                          alert(`✅ Запрос отправлен: ${result.message}`);
+                                        } else {
+                                          alert(`❌ Ошибка агента: ${result.message || 'Нет связи'}`);
+                                        }
+                                      } catch (error) {
+                                        alert('❌ Ошибка сети: не удалось связаться с сервером');
+                                      }
                                     }}
-                                    onUpdateCounters={(printerId) => {
-                                      // вызвать API для обновления счётчиков
-                                      console.log('Обновить счётчики', printerId);
+                                    onUpdateCounters={async (printerId) => {
+                                        if (!confirm('Обновить счетчики страниц сейчас?')) return;
+                                        
+                                        try {
+                                            const response = await fetch(`/api/printer/${printerId}/update-counters`, {
+                                                method: 'POST'
+                                            });
+                                            const result = await response.json();
+
+                                            if (response.ok) {
+                                                alert(`✅ ${result.message}`);
+                                            } else {
+                                                alert(`❌ Ошибка: ${result.message || 'Сервер отклонил запрос'}`);
+                                            }
+                                        } catch (e) {
+                                            alert('❌ Ошибка сети при обновлении счетчиков');
+                                        }
                                     }}
-                                    onFuserRepair={(printerId) => {
-                                      // вызвать API для ремонта печи
-                                      console.log('Ремонт печи', printerId);
+
+                                    onFuserRepair={async (printerId) => {
+                                        if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
+
+                                        try {
+                                            const response = await fetch(`/api/printer/${printerId}/repair-fuser`, {
+                                                method: 'POST'
+                                            });
+                                            const result = await response.json();
+
+                                            if (response.ok) {
+                                                alert(`🔧 ${result.message}`);
+                                            } else {
+                                                alert(`❌ Ошибка: ${result.message || 'Не удалось записать данные'}`);
+                                            }
+                                        } catch (e) {
+                                            alert('❌ Ошибка сети при записи данных о ремонте');
+                                        }
                                     }}
+
                                   />
                                 </div>
                               </div>
