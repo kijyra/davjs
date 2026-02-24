@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { apiFetch } from '@/services/api';
 
 interface VncResponse {
   success?: boolean;
@@ -14,45 +15,41 @@ export const useVnc = () => {
     pcId: number,
     ip: string,
     fullControl: boolean,
-    requestUser: boolean,
-    btnElement?: HTMLElement | null
+    requestUser: boolean
   ) => {
     if (loading) return;
     setLoading(true);
 
-    const originalText = btnElement?.innerHTML;
-    if (btnElement) {
-      btnElement.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-      (btnElement as HTMLButtonElement).disabled = true;
-    }
-
-    toast.info("Проверка доступа...", { toastId: 'vnc-info' });
+    const infoToast = toast.info("Проверка доступа...", { autoClose: false });
 
     try {
-      const url = `/VNC/Connect?pcId=${pcId}&fullControl=${fullControl}&requestUser=${!!requestUser}`;
-      const response = await fetch(url, {
+      const queryParams = new URLSearchParams({
+        pcId: pcId.toString(),
+        fullControl: fullControl.toString(),
+        requestUser: requestUser.toString()
+      });
+      const endpoint = `/api/VNC/Connect?${queryParams}`;
+
+      const result = await apiFetch<VncResponse>(endpoint, {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
       });
-      const result: VncResponse = await response.json();
 
-      if (response.ok) {
-        toast.success(result.message || "Успешно", { toastId: 'vnc-success' });
-        if (result.uri) {
-          window.location.href = result.uri;
-        }
+      toast.dismiss(infoToast);
+
+      if (result.uri) {
+        toast.success(result.message || "Успешно");
+        window.location.href = result.uri;
       } else {
-        toast.error(result.message || `Ошибка сервера: ${response.status}`, { toastId: 'vnc-error' });
+        toast.error("Сервер не вернул адрес подключения");
       }
-    } catch (error) {
-      console.error("VNC JS Error:", error);
-      toast.error("Сетевая ошибка: проверьте соединение с сервером", { toastId: 'vnc-critical' });
+    } catch (error: any) {
+      toast.dismiss(infoToast);
+      console.error("VNC Error:", error);
+      const errorMessage = error?.message || "Неизвестная ошибка";
+      toast.error(`Ошибка: ${errorMessage}`);
     } finally {
       setLoading(false);
-      if (btnElement) {
-        btnElement.innerHTML = originalText || '';
-        (btnElement as HTMLButtonElement).disabled = false;
-      }
     }
   };
 
