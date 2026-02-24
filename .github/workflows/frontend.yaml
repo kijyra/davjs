@@ -13,8 +13,7 @@ jobs:
         with:
           node-version: '20'
       - run: npm ci
-      - name: Generate Prisma Client
-        run: npx prisma generate
+      - name: Generate build
       - run: npm run build
       - name: Upload artifact (server files)
         uses: actions/upload-artifact@v4
@@ -54,7 +53,6 @@ jobs:
 
           Set-Location $target
           npm ci
-          npx prisma generate
 
           pm2 restart DavJS
           Write-Host "DavJS restarted via PM2."
