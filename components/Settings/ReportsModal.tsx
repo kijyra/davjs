@@ -10,42 +10,42 @@ const reports = [
     title: 'Полный отчёт',
     desc: 'Содержит все отчёты системы.',
     icon: 'bi-database-fill-check',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportFullInventory',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportFullInventory',
     color: 'primary'
   },
   {
     title: 'Hardware',
     desc: 'Отчет по техническому обеспечению.',
     icon: 'bi-motherboard',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportHardware',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportHardware',
     color: 'info'
   },
   {
     title: 'Software',
     desc: 'Список установленного ПО.',
     icon: 'bi-window-stack',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportSoftware',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportSoftware',
     color: 'warning'
   },
   {
     title: 'Мониторы',
     desc: 'Дисплеи, диагонали и модели.',
     icon: 'bi-display',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportMonitors',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportMonitors',
     color: 'success'
   },
   {
     title: 'Принтеры',
     desc: 'Все установленные принтеры.',
     icon: 'bi-printer',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportPrinters',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportPrinters',
     color: 'danger'
   },
   {
     title: 'USB Устройства',
     desc: 'История и текущие подключения.',
     icon: 'bi-usb-symbol',
-    url: 'https://dc1.dallari.biz:3001/Reports/ExportUsb',
+    url: 'https://dc1.dallari.biz:3001/api/Reports/ExportUsb',
     color: 'secondary'
   },
 ];
