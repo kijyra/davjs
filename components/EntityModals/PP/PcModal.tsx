@@ -75,7 +75,7 @@ export default function PCModal({ isOpen, onClose, onSuccess, initialData }: PCM
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/PP/PCEdit' : '/api/PP/PCAdd';
+    const url = initialData ? '/api/PP/PC/Edit' : '/api/PP/PC/Add';
     const formBody = new FormData();
     formBody.append('Hostname', formData.Hostname);
     formBody.append('IP', formData.IP);

@@ -54,7 +54,7 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Printer/CartridgeEdit' : '/api/Printer/CartridgeAdd';
+    const url = initialData ? '/api/Printer/Cartridge/Edit' : '/api/Printer/Cartridge/Add';
     const formBody = new FormData();
     formBody.append('Model', formData.model);
     if (formData.yield) {

@@ -84,7 +84,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/User/UserEdit' : '/User/UserAdd';
+    const url = initialData ? '/User/User/Edit' : '/User/User/Add';
     const formBody = new FormData();
     formBody.append('Name', formData.Name);
     formBody.append('SurName', formData.SurName);

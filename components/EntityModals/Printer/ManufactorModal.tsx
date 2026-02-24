@@ -37,7 +37,7 @@ export default function ManufacturerModal({ isOpen, onClose, onSuccess, initialD
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Printer/ManufactorEdit' : '/api/Printer/ManufactorAdd';
+    const url = initialData ? '/api/Printer/Manufactor/Edit' : '/api/Printer/Manufactor/Add';
     const formBody = new FormData();
     formBody.append('Name', formData.name);
     if (initialData) {

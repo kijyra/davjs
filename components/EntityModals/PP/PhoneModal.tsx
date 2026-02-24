@@ -74,7 +74,7 @@ export default function PhoneModal({ isOpen, onClose, onSuccess, initialData }: 
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/PP/PhoneEdit' : '/api/PP/PhoneAdd';
+    const url = initialData ? '/api/PP/Phone/Edit' : '/api/PP/Phone/Add';
     const formBody = new FormData();
     formBody.append('Model', formData.Model);
     formBody.append('Number', formData.Number);

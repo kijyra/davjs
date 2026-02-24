@@ -63,7 +63,7 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Printer/PrinterModelEdit' : '/api/Printer/PrinterModelAdd';
+    const url = initialData ? '/api/Printer/PrinterModel/Edit' : '/api/Printer/PrinterModel/Add';
     const formBody = new FormData();
     formBody.append('Name', formData.Name);
     formBody.append('MFP', String(formData.MFP));

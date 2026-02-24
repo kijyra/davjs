@@ -14,7 +14,6 @@ interface ViewClientProps {
 }
 interface ApiResponse {
   message: string;
-  // при необходимости добавьте другие поля
 }
 
 export default function ViewClient({ buildings, selectedBuilding, selectedFloor }: ViewClientProps) {

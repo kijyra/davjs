@@ -53,7 +53,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Geo/FloorEdit' : '/api/Geo/FloorAdd';
+    const url = initialData ? '/api/Geo/Floor/Edit' : '/api/Geo/Floor/Add';
     const formBody = new FormData();
     formBody.append('FloorNum', formData.floorNum);
     if (formData.buildingId) {

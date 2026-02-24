@@ -29,7 +29,7 @@ export default function ADUserUpdateModal({
     formData.append('IdentityName', identityName);
 
     try {
-      const response = await apiFetch<{ success: boolean; message?: string }>('/api/User/ADUserUpdate', {
+      const response = await apiFetch<{ success: boolean; message?: string }>('/api/User/ADUser/Update', {
         method: 'POST',
         body: formData,
       });

@@ -43,7 +43,7 @@ export default function BuildingModal({ isOpen, onClose, onSuccess, initialData 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const url = initialData ? '/api/Geo/BuildingEdit' : '/api/Geo/BuildingAdd';
+    const url = initialData ? '/api/Geo/Building/Edit' : '/api/Geo/Building/Add';
     const body = new FormData();
     body.append('Name', formData.Name);
     if (formData.LocationId) body.append('LocationId', formData.LocationId);

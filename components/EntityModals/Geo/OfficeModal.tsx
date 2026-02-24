@@ -53,7 +53,7 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Geo/OfficeEdit' : '/api/Geo/OfficeAdd';
+    const url = initialData ? '/api/Geo/Office/Edit' : '/api/Geo/Office/Add';
     const formBody = new FormData();
     formBody.append('Name', formData.name);
     if (formData.floorId) {

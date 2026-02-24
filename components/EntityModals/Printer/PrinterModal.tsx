@@ -81,7 +81,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/api/Printer/PrinterEdit' : '/api/Printer/PrinterAdd';
+    const url = initialData ? '/api/Printer/Printer/Edit' : '/api/Printer/Printer/Add';
     const formBody = new FormData();
     formBody.append('PrinterName', formData.printerName);
     if (formData.printerModelId) formBody.append('PrinterModelId', formData.printerModelId);
