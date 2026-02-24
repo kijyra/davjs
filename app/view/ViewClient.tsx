@@ -5,11 +5,16 @@ import { useRouter } from 'next/navigation';
 import WorkplaceDetails from '@/components/View/WorkplaceDetails';
 import { useState } from 'react';
 import HardwareInfoModal from '@/components/View/HardwareInfoModal';
+import { apiFetch } from '@/services/api';
 
 interface ViewClientProps {
   buildings: { id: number; name: string }[];
   selectedBuilding: any;
   selectedFloor: any;
+}
+interface ApiResponse {
+  message: string;
+  // при необходимости добавьте другие поля
 }
 
 export default function ViewClient({ buildings, selectedBuilding, selectedFloor }: ViewClientProps) {
@@ -155,56 +160,39 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                                     onHardwareInfo={(pc) => openModal('hardware', pc)}
                                     onRequestUpdate={async (hostname) => {
                                       try {
-                                        const response = await fetch(`/api/hardware/request-update/${hostname}`, {
+                                        const result = await apiFetch<ApiResponse>(`/api/hardware/request-update/${hostname}`, {
                                           method: 'POST'
                                         });
-                                        const result = await response.json();
-                                        
-                                        if (response.ok) {
-                                          alert(`✅ Запрос отправлен: ${result.message}`);
-                                        } else {
-                                          alert(`❌ Ошибка агента: ${result.message || 'Нет связи'}`);
-                                        }
-                                      } catch (error) {
-                                        alert('❌ Ошибка сети: не удалось связаться с сервером');
+                                        alert(`✅ Запрос отправлен: ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка агента: ${error.message || 'Нет связи'}`);
                                       }
                                     }}
-                                    onUpdateCounters={async (printerId) => {
-                                        if (!confirm('Обновить счетчики страниц сейчас?')) return;
-                                        
-                                        try {
-                                            const response = await fetch(`/api/printer/${printerId}/update-counters`, {
-                                                method: 'POST'
-                                            });
-                                            const result = await response.json();
 
-                                            if (response.ok) {
-                                                alert(`✅ ${result.message}`);
-                                            } else {
-                                                alert(`❌ Ошибка: ${result.message || 'Сервер отклонил запрос'}`);
-                                            }
-                                        } catch (e) {
-                                            alert('❌ Ошибка сети при обновлении счетчиков');
-                                        }
+                                    onUpdateCounters={async (printerId) => {
+                                      if (!confirm('Обновить счетчики страниц сейчас?')) return;
+
+                                      try {
+                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/update-counters`, {
+                                          method: 'POST'
+                                        });
+                                        alert(`✅ ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка: ${error.message || 'Сервер отклонил запрос'}`);
+                                      }
                                     }}
 
                                     onFuserRepair={async (printerId) => {
-                                        if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
+                                      if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
 
-                                        try {
-                                            const response = await fetch(`/api/printer/${printerId}/repair-fuser`, {
-                                                method: 'POST'
-                                            });
-                                            const result = await response.json();
-
-                                            if (response.ok) {
-                                                alert(`🔧 ${result.message}`);
-                                            } else {
-                                                alert(`❌ Ошибка: ${result.message || 'Не удалось записать данные'}`);
-                                            }
-                                        } catch (e) {
-                                            alert('❌ Ошибка сети при записи данных о ремонте');
-                                        }
+                                      try {
+                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/repair-fuser`, {
+                                          method: 'POST'
+                                        });
+                                        alert(`🔧 ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка: ${error.message || 'Не удалось записать данные'}`);
+                                      }
                                     }}
 
                                   />

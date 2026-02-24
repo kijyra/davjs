@@ -5,8 +5,7 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit): Prom
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   
   const url = `${cleanBaseUrl}${cleanEndpoint}`;
-
-  console.log('🚀 API Fetching URL:', url); 
+  console.log('🚀 API Fetching URL:', url);
 
   const defaultOptions: RequestInit = {
     credentials: 'include',
@@ -14,10 +13,22 @@ export async function apiFetch<T>(endpoint: string, options?: RequestInit): Prom
   };
 
   const response = await fetch(url, defaultOptions);
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.statusText}`);
+  
+  let data: any;
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    data = await response.json();
+  } else {
+    data = { message: await response.text() };
   }
 
-  return response.json() as Promise<T>;
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      message: data?.message || 'Ошибка запроса',
+      data
+    };
+  }
+
+  return data as T;
 }
