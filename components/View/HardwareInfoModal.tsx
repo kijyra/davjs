@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
-// Типы (можно вынести в отдельный файл)
 interface MonitorSpecs {
   model: string;
   diagonal: string;

@@ -29,8 +29,8 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ id: number; name: string }[]>('/Printer/PrinterModel'),
-        apiFetch<{ id: number; name: string }[]>('/View/Workplace'),
+        apiFetch<{ id: number; name: string }[]>('/api/Printer/PrinterModel'),
+        apiFetch<{ id: number; name: string }[]>('/api/View/Workplace'),
       ])
         .then(([modelsData, workplacesData]) => {
           setModels(modelsData);
@@ -81,7 +81,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Printer/PrinterEdit' : '/Printer/PrinterAdd';
+    const url = initialData ? '/api/Printer/PrinterEdit' : '/api/Printer/PrinterAdd';
     const formBody = new FormData();
     formBody.append('PrinterName', formData.printerName);
     if (formData.printerModelId) formBody.append('PrinterModelId', formData.printerModelId);

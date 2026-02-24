@@ -18,7 +18,7 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/Printer/Manufactor')
+      apiFetch<{ id: number; name: string }[]>('/api/Printer/Manufactor')
         .then(data => {
           console.log('Производители загружены:', data);
           setManufacturers(data);
@@ -54,7 +54,7 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Printer/CartridgeEdit' : '/Printer/CartridgeAdd';
+    const url = initialData ? '/api/Printer/CartridgeEdit' : '/api/Printer/CartridgeAdd';
     const formBody = new FormData();
     formBody.append('Model', formData.model);
     if (formData.yield) {

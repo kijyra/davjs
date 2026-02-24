@@ -65,7 +65,7 @@ export default function WorkplaceDetails({
         body: JSON.stringify({ pcId, fullControl, requestUser })
       });
       if (result.uri) {
-        window.location.href = result.uri; // открыть VNC-клиент
+        window.location.href = result.uri;
       }
     } catch (error) {
       console.error('VNC connection failed:', error);

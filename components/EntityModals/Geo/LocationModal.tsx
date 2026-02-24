@@ -38,7 +38,7 @@ export default function LocationModal({ isOpen, onClose, onSuccess, initialData 
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Geo/LocationEdit' : '/Geo/LocationAdd';
+    const url = initialData ? '/api/Geo/LocationEdit' : '/api/Geo/LocationAdd';
     const formBody = new FormData();
     formBody.append('Name', formData.name);
     formBody.append('Address', formData.address);

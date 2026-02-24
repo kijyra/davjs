@@ -18,7 +18,7 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; floorNum: string }[]>('/Geo/Floor')
+      apiFetch<{ id: number; floorNum: string }[]>('/api/Geo/Floor')
         .then(data => {
           console.log('Этажи загружены:', data);
           setFloors(data);
@@ -53,7 +53,7 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Geo/OfficeEdit' : '/Geo/OfficeAdd';
+    const url = initialData ? '/api/Geo/OfficeEdit' : '/api/Geo/OfficeAdd';
     const formBody = new FormData();
     formBody.append('Name', formData.name);
     if (formData.floorId) {

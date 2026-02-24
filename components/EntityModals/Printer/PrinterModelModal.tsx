@@ -18,7 +18,7 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<any[]>('/Printer/Cartridge')
+      apiFetch<any[]>('/api/Printer/Cartridge')
         .then(data => {
           const mappedData = data.map(cartridge => ({
             id: cartridge.id,
@@ -63,7 +63,7 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Printer/PrinterModelEdit' : '/Printer/PrinterModelAdd';
+    const url = initialData ? '/api/Printer/PrinterModelEdit' : '/api/Printer/PrinterModelAdd';
     const formBody = new FormData();
     formBody.append('Name', formData.Name);
     formBody.append('MFP', String(formData.MFP));

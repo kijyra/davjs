@@ -18,7 +18,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/Geo/Building')
+      apiFetch<{ id: number; name: string }[]>('/api/Geo/Building')
         .then(data => {
           console.log('Здания загружены:', data);
           setBuildings(data);
@@ -53,7 +53,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/Geo/FloorEdit' : '/Geo/FloorAdd';
+    const url = initialData ? '/api/Geo/FloorEdit' : '/api/Geo/FloorAdd';
     const formBody = new FormData();
     formBody.append('FloorNum', formData.floorNum);
     if (formData.buildingId) {

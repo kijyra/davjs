@@ -19,7 +19,7 @@ export default function BuildingModal({ isOpen, onClose, onSuccess, initialData 
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<Location[]>('/Geo/Location')
+      apiFetch<Location[]>('/api/Geo/Location')
         .then(setLocations)
         .catch(console.error);
     }
@@ -43,7 +43,7 @@ export default function BuildingModal({ isOpen, onClose, onSuccess, initialData 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const url = initialData ? '/Geo/BuildingEdit' : '/Geo/BuildingAdd';
+    const url = initialData ? '/api/Geo/BuildingEdit' : '/api/Geo/BuildingAdd';
     const body = new FormData();
     body.append('Name', formData.Name);
     if (formData.LocationId) body.append('LocationId', formData.LocationId);
