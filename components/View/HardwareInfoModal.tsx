@@ -61,6 +61,27 @@ interface HardwareInfoModalProps {
 
 export default function HardwareInfoModal({ pc, show, onClose }: HardwareInfoModalProps) {
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const handleRequestUpdate = async () => {
+    setIsUpdating(true);
+    try {
+      const response = await fetch(`/api/hardware/request-update/${pc?.hostname}`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`✅ ${data.message}`);
+      } else {
+        alert(`❌ Ошибка: ${data.message || 'Агент недоступен'}`);
+      }
+    } catch (error) {
+      alert('❌ Не удалось связаться с сервером');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   if (!pc || !pc.currentHardwareInfo) return null;
 
@@ -195,12 +216,25 @@ export default function HardwareInfoModal({ pc, show, onClose }: HardwareInfoMod
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <small className="text-muted me-auto">Обновлено: {info.collectedAtUtc}</small>
-        <button type="button" className="btn btn-secondary" onClick={onClose}>
-          Закрыть
-        </button>
-      </Modal.Footer>
+        <Modal.Footer>
+          <small className="text-muted me-auto">Обновлено: {info.collectedAtUtc}</small>
+          
+          <button 
+            type="button" 
+            className="btn btn-outline-primary btn-sm me-2" 
+            onClick={handleRequestUpdate}
+            disabled={isUpdating}
+          >
+            {isUpdating ? (
+              <span className="spinner-border spinner-border-sm me-1"></span>
+            ) : '📡 '}
+            Обновить данные
+          </button>
+
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
+            Закрыть
+          </button>
+        </Modal.Footer>
     </Modal>
   );
 }
