@@ -63,14 +63,29 @@ export default function WorkplaceDetails({
     fetchWorkplace();
   }, [workplaceId]);
 
-  const handleEditUser = () => {
-    setEditingUser(workplace.user);
-    setIsUserModalOpen(true);
+  const handleEditUser = async () => {
+    if (!workplace.user?.id) return;
+    try {
+      const fullUser = await apiFetch(`/User/User/${workplace.user.id}`);
+      setEditingUser(fullUser);
+      setIsUserModalOpen(true);
+    } catch (error) {
+      console.error('Ошибка загрузки пользователя:', error);
+      alert('Не удалось загрузить данные пользователя');
+    }
   };
 
-  const handleEditPhone = () => {
-    setEditingPhone(workplace.phone);
-    setIsPhoneModalOpen(true);
+
+    const handleEditPhone = async () => {
+    if (!workplace.phone?.id) return;
+    try {
+      const fullPhone = await apiFetch(`/PP/Phone/${workplace.phone.id}`);
+      setEditingPhone(fullPhone);
+      setIsPhoneModalOpen(true);
+    } catch (error) {
+      console.error('Ошибка загрузки телефона:', error);
+      alert('Не удалось загрузить данные телефона');
+    }
   };
 
   const handleEditPC = () => {
