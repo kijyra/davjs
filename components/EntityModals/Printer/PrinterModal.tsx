@@ -47,14 +47,14 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
      console.log('🚀 Printer: ', initialData);
     if (initialData) {
       setFormData({
-        printerName: initialData.PrinterName || '',
-        printerModelId: initialData.PrinterModelId ? String(initialData.PrinterModelId) : '',
-        iP: initialData.IP || '',
-        hostName: initialData.HostName || '',
-        printCount: initialData.PrintCount !== null && initialData.PrintCount !== undefined ? String(initialData.PrintCount) : '',
-        scanCount: initialData.ScanCount !== null && initialData.ScanCount !== undefined ? String(initialData.ScanCount) : '',
-        lastFuserRepair: initialData.LastFuserRepair || '',
-        workplaceId: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
+        printerName: initialData.printerName || '',
+        printerModelId: initialData.printerModelId ? String(initialData.printerModelId) : '',
+        iP: initialData.ip || '',
+        hostName: initialData.hostName || '',
+        printCount: initialData.printCount !== null && initialData.printCount !== undefined ? String(initialData.printCount) : '',
+        scanCount: initialData.scanCount !== null && initialData.scanCount !== undefined ? String(initialData.scanCount) : '',
+        lastFuserRepair: initialData.lastFuserRepair || '',
+        workplaceId: initialData.workplaceId ? String(initialData.workplaceId) : '',
       });
     } else {
       setFormData({
