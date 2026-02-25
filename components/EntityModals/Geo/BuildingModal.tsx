@@ -19,7 +19,7 @@ export default function BuildingModal({ isOpen, onClose, onSuccess, initialData 
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<Location[]>('/api/Geo/Location')
+      apiFetch<Location[]>('/api/Geo/Locations')
         .then(setLocations)
         .catch(console.error);
     }

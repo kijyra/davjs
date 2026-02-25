@@ -25,7 +25,7 @@ export default function PCModal({ isOpen, onClose, onSuccess, initialData }: PCM
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/api/View/Workplace')
+      apiFetch<{ id: number; name: string }[]>('/api/View/Workplaces')
         .then(data => {
           setWorkplaces(data);
         })

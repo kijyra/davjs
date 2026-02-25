@@ -53,11 +53,11 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ id: number; fullTitle: string }[]>('/Geo/Office'),
-        apiFetch<{ id: number; fullName: string }[]>('/User/User'),
-        apiFetch<{ id: number; fullName: string }[]>('/PP/PC'),
-        apiFetch<{ id: number; number: string }[]>('/PP/Phone'),
-        apiFetch<{ id: number; printerName: string }[]>('/Printer/Printer'),
+        apiFetch<{ id: number; fullTitle: string }[]>('/api/Geo/Offices'),
+        apiFetch<{ id: number; fullName: string }[]>('/api/User/Users'),
+        apiFetch<{ id: number; fullName: string }[]>('/api/PP/PCs'),
+        apiFetch<{ id: number; number: string }[]>('/api/PP/Phones'),
+        apiFetch<{ id: number; printerName: string }[]>('/api/Printer/Printers'),
       ])
         .then(([officesData, usersData, pcsData, phonesData, printersData]) => {
           setOffices(officesData);
@@ -113,7 +113,7 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
     setLoading(true);
     setErrors({});
 
-    const url = initialData ? '/View/Workplace/Edit' : '/View/Workplace/Add';
+    const url = initialData ? '/api/View/Workplace/Edit' : '/api/View/Workplace/Add';
     const formBody = new FormData();
     formBody.append('Name', formData.Name);
     formBody.append('Print', String(formData.Print));
@@ -168,8 +168,8 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
     if (!formData.OfficeId) return;
     if (!confirm('Вы уверены, что хотите удалить этот офис?')) return;
     try {
-      await apiFetch(`/Geo/Office/Delete/${formData.OfficeId}`, { method: 'POST' });
-      const updated = await apiFetch<{ id: number; fullTitle: string }[]>('/Geo/Office');
+      await apiFetch(`/api/Geo/Office/Delete/${formData.OfficeId}`, { method: 'POST' });
+      const updated = await apiFetch<{ id: number; fullTitle: string }[]>('/api/Geo/Offices');
       setOffices(updated);
       setFormData(prev => ({ ...prev, OfficeId: '' }));
     } catch (error) {
@@ -183,8 +183,8 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
         if (!formData.OfficeId) return;
     if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) return;
     try {
-      await apiFetch(`/User/User/Delete/${formData.UserId}`, { method: 'POST' });
-      const updated = await apiFetch<{ id: number; fullName: string }[]>('/User/User');
+      await apiFetch(`/api/User/User/Delete/${formData.UserId}`, { method: 'POST' });
+      const updated = await apiFetch<{ id: number; fullName: string }[]>('/api/User/Users');
       setUsers(updated);
       setFormData(prev => ({ ...prev, UserId: '' }));
     } catch (error) {
@@ -198,8 +198,8 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
         if (!formData.OfficeId) return;
     if (!confirm('Вы уверены, что хотите удалить этот ПК?')) return;
     try {
-      await apiFetch(`/PP/PC/Delete/${formData.PCId}`, { method: 'POST' });
-      const updated = await apiFetch<{ id: number; fullName: string }[]>('/PP/PC');
+      await apiFetch(`/api/PP/PC/Delete/${formData.PCId}`, { method: 'POST' });
+      const updated = await apiFetch<{ id: number; fullName: string }[]>('/api/PP/PCs');
       setPcs(updated);
       setFormData(prev => ({ ...prev, PCId: '' }));
     } catch (error) {
@@ -213,8 +213,8 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
     if (!formData.OfficeId) return;
     if (!confirm('Вы уверены, что хотите удалить этот телефон?')) return;
     try {
-      await apiFetch(`/PP/Phone/Delete/${formData.PhoneId}`, { method: 'POST' });
-      const updated = await apiFetch<{ id: number; number: string }[]>('/PP/Phone');
+      await apiFetch(`/api/PP/Phone/Delete/${formData.PhoneId}`, { method: 'POST' });
+      const updated = await apiFetch<{ id: number; number: string }[]>('/api/PP/Phones');
       setPhones(updated);
       setFormData(prev => ({ ...prev, PhoneId: '' }));
     } catch (error) {
@@ -228,8 +228,8 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
             if (!formData.OfficeId) return;
     if (!confirm('Вы уверены, что хотите удалить этот принтер?')) return;
     try {
-      await apiFetch(`/printer/printer/Delete/${formData.PrinterId}`, { method: 'POST' });
-      const updated = await apiFetch<{ id: number; printerName: string }[]>('/printer/printer');
+      await apiFetch(`/api/printer/printer/Delete/${formData.PrinterId}`, { method: 'POST' });
+      const updated = await apiFetch<{ id: number; printerName: string }[]>('/api/printer/printers');
       setPrinters(updated);
       setFormData(prev => ({ ...prev, PrinterId: '' }));
     } catch (error) {
@@ -238,27 +238,27 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
    };
 
   const handleOfficeModalSuccess = () => {
-    apiFetch<{ id: number; fullTitle: string }[]>('/Geo/Office').then(setOffices).catch(console.error);
+    apiFetch<{ id: number; fullTitle: string }[]>('/api/Geo/Offices').then(setOffices).catch(console.error);
     setIsOfficeModalOpen(false);
     setEditingOffice(null);
   };
   const handleUserModalSuccess = () => {
-    apiFetch<{ id: number; fullName: string }[]>('/User/User').then(setUsers).catch(console.error);
+    apiFetch<{ id: number; fullName: string }[]>('/User/Users').then(setUsers).catch(console.error);
     setIsUserModalOpen(false);
     setEditingUser(null);
   };
-    const handlePCModalSuccess = () => {
-    apiFetch<{ id: number; fullName: string }[]>('/PP/PC').then(setPcs).catch(console.error);
+  const handlePCModalSuccess = () => {
+    apiFetch<{ id: number; fullName: string }[]>('/api/PP/PCs').then(setPcs).catch(console.error);
     setIsPcModalOpen(false);
     setEditingPc(null);
   };
-    const handlePhoneModalSuccess = () => {
-    apiFetch<{ id: number; number: string }[]>('/PP/Phone').then(setPhones).catch(console.error);
+  const handlePhoneModalSuccess = () => {
+    apiFetch<{ id: number; number: string }[]>('/api/PP/Phones').then(setPhones).catch(console.error);
     setIsPhoneModalOpen(false);
     setEditingPhone(null);
   };
-      const handlePrinterModalSuccess = () => {
-    apiFetch<{ id: number; printerName: string }[]>('/Printer/Printer').then(setPrinters).catch(console.error);
+  const handlePrinterModalSuccess = () => {
+    apiFetch<{ id: number; printerName: string }[]>('/api/Printer/Printers').then(setPrinters).catch(console.error);
     setIsPrinterModalOpen(false);
     setEditingPrinter(null);
   };
@@ -487,45 +487,26 @@ export default function WorkplaceModal({ isOpen, onClose, onSuccess, initialData
       <UserModal
         isOpen={isUserModalOpen}
         onClose={() => { setIsUserModalOpen(false); setEditingUser(null); }}
-        onSuccess={() => {
-          apiFetch<{ id: number; fullName: string }[]>('/User/User')
-            .then(data => setUsers(data))
-          setIsUserModalOpen(false);
-          setEditingUser(null);
-        }}
+        onSuccess={handleUserModalSuccess}
         initialData={editingUser}
       />
+
       <PCModal
         isOpen={isPcModalOpen}
         onClose={() => { setIsPcModalOpen(false); setEditingPc(null); }}
-        onSuccess={() => {
-          apiFetch<{ id: number; fullName: string }[]>('/PP/PC')
-            .then(data => setPcs(data))
-          setIsPcModalOpen(false);
-          setEditingPc(null);
-        }}
+        onSuccess={handlePCModalSuccess}
         initialData={editingPc}
       />
       <PhoneModal
         isOpen={isPhoneModalOpen}
         onClose={() => { setIsPhoneModalOpen(false); setEditingPhone(null); }}
-        onSuccess={() => {
-          apiFetch<{ id: number; number: string }[]>('/PP/Phone')
-            .then(data => setPhones(data))
-          setIsPhoneModalOpen(false);
-          setEditingPhone(null);
-        }}
+        onSuccess={handlePhoneModalSuccess}
         initialData={editingPhone}
       />
       <PrinterModal
         isOpen={isPrinterModalOpen}
         onClose={() => { setIsPrinterModalOpen(false); setEditingPrinter(null); }}
-        onSuccess={() => {
-          apiFetch<{ id: number; printerName: string }[]>('/Printer/Printer')
-            .then(data => setPrinters(data))
-          setIsPrinterModalOpen(false);
-          setEditingPrinter(null);
-        }}
+        onSuccess={handlePrinterModalSuccess}
         initialData={editingPrinter}
       />
     </div>

@@ -18,7 +18,7 @@ export default function PrinterModelModal({ isOpen, onClose, onSuccess, initialD
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<any[]>('/api/Printer/Cartridge')
+      apiFetch<any[]>('/api/Printer/Cartridges')
         .then(data => {
           const mappedData = data.map(cartridge => ({
             id: cartridge.id,

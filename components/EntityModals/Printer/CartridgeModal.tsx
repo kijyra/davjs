@@ -18,7 +18,7 @@ export default function CartridgeModal({ isOpen, onClose, onSuccess, initialData
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/api/Printer/Manufactor')
+      apiFetch<{ id: number; name: string }[]>('/api/Printer/Manufactors')
         .then(data => {
           console.log('Производители загружены:', data);
           setManufacturers(data);

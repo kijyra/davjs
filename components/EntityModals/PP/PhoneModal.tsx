@@ -25,7 +25,7 @@ export default function PhoneModal({ isOpen, onClose, onSuccess, initialData }: 
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/api/View/Workplace')
+      apiFetch<{ id: number; name: string }[]>('/api/View/Workplaces')
         .then(data => {
           setWorkplaces(data);
         })

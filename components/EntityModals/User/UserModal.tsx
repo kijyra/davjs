@@ -32,9 +32,9 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ id: number; cn: string }[]>('/api/User/ADUser'),
-        apiFetch<{ id: number; name: string }[]>('/api/View/Workplace'),
-        apiFetch<{ id: number; printerName: string }[]>('/api/Printer/Printer'),
+        apiFetch<{ id: number; cn: string }[]>('/api/User/ADUsers'),
+        apiFetch<{ id: number; name: string }[]>('/api/View/Workplaces'),
+        apiFetch<{ id: number; printerName: string }[]>('/api/Printer/Printers'),
       ])
         .then(([adUsersData, workplacesData, printersData]) => {
           setAdUsers(adUsersData);

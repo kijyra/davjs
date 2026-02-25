@@ -18,7 +18,7 @@ export default function OfficeModal({ isOpen, onClose, onSuccess, initialData }:
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; floorNum: string }[]>('/api/Geo/Floor')
+      apiFetch<{ id: number; floorNum: string }[]>('/api/Geo/Floors')
         .then(data => {
           console.log('Этажи загружены:', data);
           setFloors(data);

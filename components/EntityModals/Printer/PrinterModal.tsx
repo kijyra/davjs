@@ -29,8 +29,8 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
   useEffect(() => {
     if (isOpen) {
       Promise.all([
-        apiFetch<{ id: number; name: string }[]>('/api/Printer/PrinterModel'),
-        apiFetch<{ id: number; name: string }[]>('/api/View/Workplace'),
+        apiFetch<{ id: number; name: string }[]>('/api/Printer/PrinterModels'),
+        apiFetch<{ id: number; name: string }[]>('/api/View/Workplaces'),
       ])
         .then(([modelsData, workplacesData]) => {
           setModels(modelsData);

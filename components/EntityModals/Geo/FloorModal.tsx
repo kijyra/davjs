@@ -18,7 +18,7 @@ export default function FloorModal({ isOpen, onClose, onSuccess, initialData }: 
 
   useEffect(() => {
     if (isOpen) {
-      apiFetch<{ id: number; name: string }[]>('/api/Geo/Building')
+      apiFetch<{ id: number; name: string }[]>('/api/Geo/Buildings')
         .then(data => {
           console.log('Здания загружены:', data);
           setBuildings(data);
