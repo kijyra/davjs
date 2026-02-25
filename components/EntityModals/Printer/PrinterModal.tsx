@@ -44,6 +44,7 @@ export default function PrinterModal({ isOpen, onClose, onSuccess, initialData }
   }, [isOpen]);
 
   useEffect(() => {
+     console.log('🚀 Printer: ', initialData);
     if (initialData) {
       setFormData({
         printerName: initialData.PrinterName || '',

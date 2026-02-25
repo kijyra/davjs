@@ -49,6 +49,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
   }, [isOpen]);
 
   useEffect(() => {
+    console.log('🚀 User: ', initialData);
     if (initialData) {
       setFormData({
         Name: initialData.name || '',

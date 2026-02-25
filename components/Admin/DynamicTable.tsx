@@ -25,7 +25,7 @@ import OfficeModal from '../EntityModals/Geo/OfficeModal';
 import ManufactorModal from '../EntityModals/Printer/ManufactorModal';
 import CartridgeModal from '../EntityModals/Printer/CartridgeModal';
 import PrinterModelModal from '../EntityModals/Printer/PrinterModelModal';
-import PrinterModal from '../EntityModals/Printer/PrinterModelModal';
+import PrinterModal from '../EntityModals/Printer/PrinterModal';
 import UserModal from '../EntityModals/User/UserModal';
 import ADUserUpdateModal from '../EntityModals/User/ADUserModal';
 import PhoneModal from '../EntityModals/PP/PhoneModal';

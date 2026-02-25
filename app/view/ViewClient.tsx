@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import WorkplaceDetails from '@/components/View/WorkplaceDetails';
 import { useState } from 'react';
 import HardwareInfoModal from '@/components/View/HardwareInfoModal';
+import WorkplaceModal from '@/components/EntityModals/WorkplaceModal';
+import OfficeModal from '@/components/EntityModals/Geo/OfficeModal';
 import { apiFetch } from '@/services/api';
 
 interface ViewClientProps {
@@ -19,6 +21,10 @@ interface ApiResponse {
 export default function ViewClient({ buildings, selectedBuilding, selectedFloor }: ViewClientProps) {
   const router = useRouter();
 
+  const [isWorkplaceModalOpen, setIsWorkplaceModalOpen] = useState(false);
+  const [editingWorkplace, setEditingWorkplace] = useState<any>(null);
+  const [isOfficeModalOpen, setIsOfficeModalOpen] = useState(false);
+  const [editingOffice, setEditingOffice] = useState<any>(null);
 
   const [modalState, setModalState] = useState<{
     type: string | null;
@@ -30,12 +36,41 @@ export default function ViewClient({ buildings, selectedBuilding, selectedFloor 
     setModalState({ type, isOpen: true, initialData: data });
   };
 
-const getLink = (params: { buildingId?: number; floorId?: number }) => {
-  const search = new URLSearchParams();
-  if (params.buildingId) search.set('buildingId', params.buildingId.toString());
-  if (params.floorId) search.set('floorId', params.floorId.toString());
-  return `/view?${search.toString()}`;
-};
+  const getLink = (params: { buildingId?: number; floorId?: number }) => {
+    const search = new URLSearchParams();
+    if (params.buildingId) search.set('buildingId', params.buildingId.toString());
+    if (params.floorId) search.set('floorId', params.floorId.toString());
+    return `/view?${search.toString()}`;
+  };
+
+  const handleAddOffice = () => {
+    setEditingOffice(null);
+    setIsOfficeModalOpen(true);
+  }
+  const handleAddWorkplace = () => {
+    setEditingWorkplace(null);
+    setIsWorkplaceModalOpen(true);
+  };
+
+    const handleEditOffice = (office: any) => {
+    setEditingOffice(office);
+    setIsOfficeModalOpen(true);
+  };
+  const handleEditWorkplace = (workplace: any) => {
+    setEditingWorkplace(workplace);
+    setIsWorkplaceModalOpen(true);
+  };
+
+  const handleWorkplaceModalSuccess = () => {
+    router.refresh();
+    setIsWorkplaceModalOpen(false);
+    setEditingWorkplace(null);
+  };
+  const handleOfficeModalSuccess = () => {
+    router.refresh();
+    setIsOfficeModalOpen(false);
+    setEditingOffice(null);
+  };
 
   return (
     <div className="container-fluid">
@@ -65,10 +100,7 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                 <h1>Здание: {selectedBuilding.name}</h1>
                 <button
                   className="btn btn-primary"
-                  onClick={() => {
-                    // TODO: открыть модалку добавления рабочего места
-                    alert('Добавить рабочее место (будет реализовано позже)');
-                  }}
+                  onClick={handleAddWorkplace}
                 >
                   <i className="bi bi-plus-lg"></i> Добавить рабочее место
                 </button>
@@ -107,10 +139,7 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                             {office.id && (
                               <button
                                 className="btn btn-xs btn-outline-secondary border-0 p-0 ms-2"
-                                onClick={() => {
-                                  // TODO: открыть модалку редактирования офиса
-                                  alert('Редактировать офис');
-                                }}
+                                onClick={handleEditOffice}
                               >
                                 <i className="bi bi-pencil-square"></i>
                               </button>
@@ -135,10 +164,7 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                                 </button>
                                 <button
                                   className="btn btn-xs btn-outline-secondary border-0 p-0 ms-2"
-                                  onClick={() => {
-                                    // TODO: открыть модалку редактирования рабочего места
-                                    alert('Редактировать рабочее место');
-                                  }}
+                                  onClick={() => handleEditWorkplace(wp)}
                                 >
                                   <i className="bi bi-pencil-square"></i>
                                 </button>
@@ -150,42 +176,42 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                               >
                                 <div className="accordion-body bg-body-tertiary">
                                   <WorkplaceDetails
-                                  workplaceId={wp.id}
-                                  userSettings={{ defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' }}
-                                  onHardwareInfo={(pc) => openModal('hardware', pc)}
-                                  onRequestUpdate={async (hostname) => {
-                                    try {
-                                      const result = await apiFetch<ApiResponse>(`/api/hardware/request-update/${hostname}`, {
-                                        method: 'POST'
-                                      });
-                                      alert(`✅ Запрос отправлен: ${result.message}`);
-                                    } catch (error: any) {
-                                      alert(`❌ Ошибка агента: ${error.message || 'Нет связи'}`);
-                                    }
-                                  }}
-                                  onUpdateCounters={async (printerId) => {
-                                    if (!confirm('Обновить счетчики страниц сейчас?')) return;
-                                    try {
-                                      const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/update-counters`, {
-                                        method: 'POST'
-                                      });
-                                      alert(`✅ ${result.message}`);
-                                    } catch (error: any) {
-                                      alert(`❌ Ошибка: ${error.message || 'Сервер отклонил запрос'}`);
-                                    }
-                                  }}
-                                  onFuserRepair={async (printerId) => {
-                                    if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
-                                    try {
-                                      const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/repair-fuser`, {
-                                        method: 'POST'
-                                      });
-                                      alert(`🔧 ${result.message}`);
-                                    } catch (error: any) {
-                                      alert(`❌ Ошибка: ${error.message || 'Не удалось записать данные'}`);
-                                    }
-                                  }}
-                                />
+                                    workplaceId={wp.id}
+                                    userSettings={{ defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' }}
+                                    onHardwareInfo={(pc) => openModal('hardware', pc)}
+                                    onRequestUpdate={async (hostname) => {
+                                      try {
+                                        const result = await apiFetch<ApiResponse>(`/api/hardware/request-update/${hostname}`, {
+                                          method: 'POST'
+                                        });
+                                        alert(`✅ Запрос отправлен: ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка агента: ${error.message || 'Нет связи'}`);
+                                      }
+                                    }}
+                                    onUpdateCounters={async (printerId) => {
+                                      if (!confirm('Обновить счетчики страниц сейчас?')) return;
+                                      try {
+                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/update-counters`, {
+                                          method: 'POST'
+                                        });
+                                        alert(`✅ ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка: ${error.message || 'Сервер отклонил запрос'}`);
+                                      }
+                                    }}
+                                    onFuserRepair={async (printerId) => {
+                                      if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
+                                      try {
+                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/repair-fuser`, {
+                                          method: 'POST'
+                                        });
+                                        alert(`🔧 ${result.message}`);
+                                      } catch (error: any) {
+                                        alert(`❌ Ошибка: ${error.message || 'Не удалось записать данные'}`);
+                                      }
+                                    }}
+                                  />
                                 </div>
                               </div>
                             </div>
@@ -202,10 +228,25 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
           )}
         </div>
       </div>
+
       <HardwareInfoModal
         pc={modalState.initialData}
         show={modalState.isOpen && modalState.type === 'hardware'}
         onClose={() => setModalState({ type: null, isOpen: false })}
+      />
+
+      <WorkplaceModal
+        isOpen={isWorkplaceModalOpen}
+        onClose={() => setIsWorkplaceModalOpen(false)}
+        onSuccess={handleWorkplaceModalSuccess}
+        initialData={editingWorkplace}
+      />
+
+      <OfficeModal
+        isOpen={isOfficeModalOpen}
+        onClose={() => setIsOfficeModalOpen(false)}
+        onSuccess={handleOfficeModalSuccess}
+        initialData={editingOffice}
       />
     </div>
   );
