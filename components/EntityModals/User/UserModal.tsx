@@ -50,6 +50,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
 
   useEffect(() => {
     if (initialData) {
+      console.log('Данные для инициализации:', initialData);
       setFormData({
         name: initialData.Name || '',
         surName: initialData.SurName || '',
