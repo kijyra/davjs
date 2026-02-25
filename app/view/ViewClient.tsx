@@ -150,51 +150,42 @@ const getLink = (params: { buildingId?: number; floorId?: number }) => {
                               >
                                 <div className="accordion-body bg-body-tertiary">
                                   <WorkplaceDetails
-                                    workplace={wp}
-                                    userSettings={{ defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' }} // получите из API или контекста
-                                    onEditUser={(user) => openModal('user', user)}
-                                    onEditPhone={(phone) => openModal('phone', phone)}
-                                    onEditPC={(pc) => openModal('pc', pc)}
-                                    onEditPrinter={(printer) => openModal('printer', printer)}
-                                    onHardwareInfo={(pc) => openModal('hardware', pc)}
-                                    onRequestUpdate={async (hostname) => {
-                                      try {
-                                        const result = await apiFetch<ApiResponse>(`/api/hardware/request-update/${hostname}`, {
-                                          method: 'POST'
-                                        });
-                                        alert(`✅ Запрос отправлен: ${result.message}`);
-                                      } catch (error: any) {
-                                        alert(`❌ Ошибка агента: ${error.message || 'Нет связи'}`);
-                                      }
-                                    }}
-
-                                    onUpdateCounters={async (printerId) => {
-                                      if (!confirm('Обновить счетчики страниц сейчас?')) return;
-
-                                      try {
-                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/update-counters`, {
-                                          method: 'POST'
-                                        });
-                                        alert(`✅ ${result.message}`);
-                                      } catch (error: any) {
-                                        alert(`❌ Ошибка: ${error.message || 'Сервер отклонил запрос'}`);
-                                      }
-                                    }}
-
-                                    onFuserRepair={async (printerId) => {
-                                      if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
-
-                                      try {
-                                        const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/repair-fuser`, {
-                                          method: 'POST'
-                                        });
-                                        alert(`🔧 ${result.message}`);
-                                      } catch (error: any) {
-                                        alert(`❌ Ошибка: ${error.message || 'Не удалось записать данные'}`);
-                                      }
-                                    }}
-
-                                  />
+                                  workplaceId={wp.id}
+                                  userSettings={{ defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' }}
+                                  onHardwareInfo={(pc) => openModal('hardware', pc)}
+                                  onRequestUpdate={async (hostname) => {
+                                    try {
+                                      const result = await apiFetch<ApiResponse>(`/api/hardware/request-update/${hostname}`, {
+                                        method: 'POST'
+                                      });
+                                      alert(`✅ Запрос отправлен: ${result.message}`);
+                                    } catch (error: any) {
+                                      alert(`❌ Ошибка агента: ${error.message || 'Нет связи'}`);
+                                    }
+                                  }}
+                                  onUpdateCounters={async (printerId) => {
+                                    if (!confirm('Обновить счетчики страниц сейчас?')) return;
+                                    try {
+                                      const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/update-counters`, {
+                                        method: 'POST'
+                                      });
+                                      alert(`✅ ${result.message}`);
+                                    } catch (error: any) {
+                                      alert(`❌ Ошибка: ${error.message || 'Сервер отклонил запрос'}`);
+                                    }
+                                  }}
+                                  onFuserRepair={async (printerId) => {
+                                    if (!confirm('Вы подтверждаете сброс ресурса печи (Fuser) после ремонта?')) return;
+                                    try {
+                                      const result = await apiFetch<ApiResponse>(`/api/printer/${printerId}/repair-fuser`, {
+                                        method: 'POST'
+                                      });
+                                      alert(`🔧 ${result.message}`);
+                                    } catch (error: any) {
+                                      alert(`❌ Ошибка: ${error.message || 'Не удалось записать данные'}`);
+                                    }
+                                  }}
+                                />
                                 </div>
                               </div>
                             </div>
