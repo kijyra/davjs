@@ -66,7 +66,7 @@ export default function WorkplaceDetails({
   const handleEditUser = async () => {
     if (!workplace.user?.id) return;
     try {
-      const fullUser = await apiFetch(`/User/User/${workplace.user.id}`);
+      const fullUser = await apiFetch(`/api/User/User/${workplace.user.id}`);
       setEditingUser(fullUser);
       setIsUserModalOpen(true);
     } catch (error) {
@@ -79,7 +79,7 @@ export default function WorkplaceDetails({
     const handleEditPhone = async () => {
     if (!workplace.phone?.id) return;
     try {
-      const fullPhone = await apiFetch(`/PP/Phone/${workplace.phone.id}`);
+      const fullPhone = await apiFetch(`/api/PP/Phone/${workplace.phone.id}`);
       setEditingPhone(fullPhone);
       setIsPhoneModalOpen(true);
     } catch (error) {
@@ -88,14 +88,28 @@ export default function WorkplaceDetails({
     }
   };
 
-  const handleEditPC = () => {
-    setEditingPc(workplace.pc);
-    setIsPcModalOpen(true);
+  const handleEditPC = async () => {
+    if (!workplace.pc?.id) return;
+    try {
+      const fullPC = await apiFetch(`/api/PP/PC/${workplace.pc.id}`);
+      setEditingPc(fullPC);
+      setIsPcModalOpen(true);
+    } catch (error) {
+      console.error('Ошибка загрузки компьютера:', error);
+      alert('Не удалось загрузить данные компьютера');
+    }
   };
 
-  const handleEditPrinter = () => {
-    setEditingPrinter(workplace.printer);
-    setIsPrinterModalOpen(true);
+  const handleEditPrinter = async () => {
+    if (!workplace.printer?.id) return;
+    try {
+      const fullPrinter = await apiFetch(`/api/Printer/Printer/${workplace.printer.id}`);
+      setEditingPrinter(fullPrinter);
+      setIsPrinterModalOpen(true);
+    } catch (error) {
+      console.error('Ошибка загрузки принтера:', error);
+      alert('Не удалось загрузить данные принтера');
+    }
   };
 
   const renderMonitors = () => {
