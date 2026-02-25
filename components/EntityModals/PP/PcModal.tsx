@@ -39,12 +39,12 @@ export default function PCModal({ isOpen, onClose, onSuccess, initialData }: PCM
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Hostname: initialData.Hostname || '',
-        IP: initialData.IP || '',
-        Anydesk: initialData.Anydesk || '',
-        Domain: initialData.Domain || false,
-        Think: initialData.Think || false,
-        Workplace: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
+        Hostname: initialData.hostname || '',
+        IP: initialData.ip || '',
+        Anydesk: initialData.anydesk || '',
+        Domain: initialData.domain || false,
+        Think: initialData.think || false,
+        Workplace: initialData.workplaceId ? String(initialData.workplaceId) : '',
       });
     } else {
       setFormData({

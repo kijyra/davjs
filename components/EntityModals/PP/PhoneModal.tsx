@@ -39,12 +39,12 @@ export default function PhoneModal({ isOpen, onClose, onSuccess, initialData }: 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        Model: initialData.Model || '',
-        Number: initialData.Number || '',
-        Ip: initialData.Ip || '',
-        Handset: initialData.Handset || false,
-        NameInBase: initialData.NameInBase || '',
-        Workplace: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
+        Model: initialData.model || '',
+        Number: initialData.number || '',
+        Ip: initialData.ip || '',
+        Handset: initialData.handset || false,
+        NameInBase: initialData.nameInBase || '',
+        Workplace: initialData.workplaceId ? String(initialData.workplaceId) : '',
       });
     } else {
       setFormData({
