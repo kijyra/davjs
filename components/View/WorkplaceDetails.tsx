@@ -1,20 +1,21 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { CONNECTION_OPTIONS, CONNECTION_URLS } from '../../constants/connections';
 import { useVnc } from '../../hooks/usevnc';
 import { apiFetch } from '@/services/api';
 
+import UserModal from '../EntityModals/User/UserModal';
+import PhoneModal from '../EntityModals/PP/PhoneModal';
+import PCModal from '../EntityModals/PP/PcModal';
+import PrinterModal from '../EntityModals/Printer/PrinterModal';
+
 interface WorkplaceDetailsProps {
-  workplace: any;
+  workplaceId: number;
   userSettings?: {
     defaultPCConnection: string;
     thinkConnection: string;
   };
-  onEditUser?: (user: any) => void;
-  onEditPhone?: (phone: any) => void;
-  onEditPC?: (pc: any) => void;
-  onEditPrinter?: (printer: any) => void;
   onHardwareInfo?: (pc: any) => void;
   onRequestUpdate?: (hostname: string) => void;
   onUpdateCounters?: (printerId: number) => void;
@@ -22,24 +23,69 @@ interface WorkplaceDetailsProps {
 }
 
 export default function WorkplaceDetails({
-  workplace,
+  workplaceId,
   userSettings = { defaultPCConnection: 'VNC10', thinkConnection: 'WTRC' },
-  onEditUser,
-  onEditPhone,
-  onEditPC,
-  onEditPrinter,
   onHardwareInfo,
   onRequestUpdate,
   onUpdateCounters,
   onFuserRepair,
 }: WorkplaceDetailsProps) {
-  const { user, phone, pc, printer } = workplace;
-  
+  const [workplace, setWorkplace] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const [editingPhone, setEditingPhone] = useState<any>(null);
+
+  const [isPcModalOpen, setIsPcModalOpen] = useState(false);
+  const [editingPc, setEditingPc] = useState<any>(null);
+
+  const [isPrinterModalOpen, setIsPrinterModalOpen] = useState(false);
+  const [editingPrinter, setEditingPrinter] = useState<any>(null);
+
   const { connectVnc } = useVnc();
-  
+
+  const fetchWorkplace = async () => {
+    try {
+      setLoading(true);
+      const data = await apiFetch(`/api/view/workplace/${workplaceId}`);
+      setWorkplace(data);
+    } catch (error) {
+      console.error('Ошибка загрузки рабочего места:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkplace();
+  }, [workplaceId]);
+
+  const handleEditUser = () => {
+    setEditingUser(workplace.user);
+    setIsUserModalOpen(true);
+  };
+
+  const handleEditPhone = () => {
+    setEditingPhone(workplace.phone);
+    setIsPhoneModalOpen(true);
+  };
+
+  const handleEditPC = () => {
+    setEditingPc(workplace.pc);
+    setIsPcModalOpen(true);
+  };
+
+  const handleEditPrinter = () => {
+    setEditingPrinter(workplace.printer);
+    setIsPrinterModalOpen(true);
+  };
+
   const renderMonitors = () => {
-    if (!pc?.displayList?.length) return '—';
-    const groups = pc.displayList.reduce((acc: any, m: any) => {
+    if (!workplace?.pc?.displayList?.length) return '—';
+    const groups = workplace.pc.displayList.reduce((acc: any, m: any) => {
       acc[m.diagonal] = (acc[m.diagonal] || 0) + 1;
       return acc;
     }, {});
@@ -62,7 +108,7 @@ export default function WorkplaceDetails({
       const result = await apiFetch<any>('/api/VNC/Connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pcId, fullControl, requestUser })
+        body: JSON.stringify({ pcId, fullControl, requestUser }),
       });
       if (result.uri) {
         window.location.href = result.uri;
@@ -72,6 +118,11 @@ export default function WorkplaceDetails({
       alert('Не удалось подключиться к ПК');
     }
   };
+
+  if (loading) return <div className="text-center p-4">Загрузка...</div>;
+  if (!workplace) return <div className="text-center p-4">Рабочее место не найдено</div>;
+
+  const { user, phone, pc, printer } = workplace;
 
   return (
     <div className="accordion-body bg-body-tertiary">
@@ -85,10 +136,10 @@ export default function WorkplaceDetails({
                 <h6 className="text-primary fw-bold mb-0">
                   <i className="bi bi-person me-1"></i> Пользователь
                 </h6>
-                {user && onEditUser && (
+                {user && (
                   <button
                     className="btn btn-xs btn-outline-secondary border-0 p-0"
-                    onClick={() => onEditUser(user)}
+                    onClick={handleEditUser}
                   >
                     <i className="bi bi-pencil-square"></i>
                   </button>
@@ -109,7 +160,7 @@ export default function WorkplaceDetails({
               <div className="d-grid">
                 {user?.bitrix && (
                   <a
-                    href={user.bitrixPath} // предполагаем, что API возвращает полный URL
+                    href={user.bitrixPath}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-sm btn-outline-primary"
@@ -128,10 +179,10 @@ export default function WorkplaceDetails({
                 <h6 className="text-primary fw-bold mb-0">
                   <i className="bi bi-telephone me-1"></i> Телефон
                 </h6>
-                {phone && onEditPhone && (
+                {phone && (
                   <button
                     className="btn btn-xs btn-outline-secondary border-0 p-0"
-                    onClick={() => onEditPhone(phone)}
+                    onClick={handleEditPhone}
                   >
                     <i className="bi bi-pencil-square"></i>
                   </button>
@@ -195,14 +246,12 @@ export default function WorkplaceDetails({
                         <h6 className="text-primary fw-bold mb-0">
                           <i className="bi bi-laptop me-1"></i> Компьютер
                         </h6>
-                        {onEditPC && (
-                          <button
-                            className="btn btn-xs btn-outline-secondary border-0 p-0"
-                            onClick={() => onEditPC(pc)}
-                          >
-                            <i className="bi bi-pencil-square"></i>
-                          </button>
-                        )}
+                        <button
+                          className="btn btn-xs btn-outline-secondary border-0 p-0"
+                          onClick={handleEditPC}
+                        >
+                          <i className="bi bi-pencil-square"></i>
+                        </button>
                       </div>
 
                       <div className="mb-3">
@@ -307,70 +356,69 @@ export default function WorkplaceDetails({
 
                       {/* Кнопка подключения с выпадающим списком */}
                       <div className="d-grid">
-                          {/* Кнопка с выпадающим списком */}
-                          <div className="btn-group">
-                            {(() => {
-                              const defaultConn = pc.think
-                                ? userSettings.thinkConnection
-                                : userSettings.defaultPCConnection;
-                              const defaultUrl = getConnectionUrl(defaultConn, pc.ip);
-                              return (
-                                <>
-                                  <a href={defaultUrl} className="btn btn-sm btn-outline-primary">
-                                    {CONNECTION_OPTIONS[defaultConn] || defaultConn}
-                                  </a>
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  >
-                                    <span className="visually-hidden">Toggle Dropdown</span>
-                                  </button>
-                                  <div className="dropdown-menu">
-                                    {Object.entries(CONNECTION_OPTIONS).map(([key, label]) => {
-                                      if (key === defaultConn) return null;
+                        <div className="btn-group">
+                          {(() => {
+                            const defaultConn = pc.think
+                              ? userSettings.thinkConnection
+                              : userSettings.defaultPCConnection;
+                            const defaultUrl = getConnectionUrl(defaultConn, pc.ip);
+                            return (
+                              <>
+                                <a href={defaultUrl} className="btn btn-sm btn-outline-primary">
+                                  {CONNECTION_OPTIONS[defaultConn] || defaultConn}
+                                </a>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split"
+                                  data-bs-toggle="dropdown"
+                                  aria-expanded="false"
+                                >
+                                  <span className="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <div className="dropdown-menu">
+                                  {Object.entries(CONNECTION_OPTIONS).map(([key, label]) => {
+                                    if (key === defaultConn) return null;
 
-                                      const isWtrcOrWeb = key === 'WTRC' || key === 'WEB';
-                                      const isVnc = key.startsWith('VNC');
+                                    const isWtrcOrWeb = key === 'WTRC' || key === 'WEB';
+                                    const isVnc = key.startsWith('VNC');
 
-                                      if (pc.think) {
-                                        if (!isWtrcOrWeb && !isVnc) return null;
-                                        if (key.endsWith('1')) return null;
-                                      } else {
-                                        if (isWtrcOrWeb) return null;
-                                      }
+                                    if (pc.think) {
+                                      if (!isWtrcOrWeb && !isVnc) return null;
+                                      if (key.endsWith('1')) return null;
+                                    } else {
+                                      if (isWtrcOrWeb) return null;
+                                    }
 
-                                      if (isVnc) {
-                                        const control = key[3] === '1';
-                                        const prompt = key[4] === '1';
-                                        return (
-                                          <a
-                                            key={key}
-                                            className="dropdown-item"
-                                            href="#"
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              connectVnc(pc.id, pc.ip, control, prompt);
-                                            }}
-                                          >
-                                            {label}
-                                          </a>
-                                        );
-                                      } else {
-                                        const href = getConnectionUrl(key, pc.ip);
-                                        return (
-                                          <a key={key} className="dropdown-item" href={href}>
-                                            {label}
-                                          </a>
-                                        );
-                                      }
-                                    })}
-                                  </div>
-                                </>
-                              );
-                            })()}
-                          </div>
+                                    if (isVnc) {
+                                      const control = key[3] === '1';
+                                      const prompt = key[4] === '1';
+                                      return (
+                                        <a
+                                          key={key}
+                                          className="dropdown-item"
+                                          href="#"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            connectVnc(pc.id, pc.ip, control, prompt);
+                                          }}
+                                        >
+                                          {label}
+                                        </a>
+                                      );
+                                    } else {
+                                      const href = getConnectionUrl(key, pc.ip);
+                                      return (
+                                        <a key={key} className="dropdown-item" href={href}>
+                                          {label}
+                                        </a>
+                                      );
+                                    }
+                                  })}
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
                       </div>
                     </>
                   )}
@@ -388,14 +436,12 @@ export default function WorkplaceDetails({
                         <h6 className="text-primary fw-bold mb-0">
                           <i className="bi bi-printer me-1"></i> Принтер
                         </h6>
-                        {onEditPrinter && (
-                          <button
-                            className="btn btn-xs btn-outline-secondary border-0 p-0"
-                            onClick={() => onEditPrinter(printer)}
-                          >
-                            <i className="bi bi-pencil-square"></i>
-                          </button>
-                        )}
+                        <button
+                          className="btn btn-xs btn-outline-secondary border-0 p-0"
+                          onClick={handleEditPrinter}
+                        >
+                          <i className="bi bi-pencil-square"></i>
+                        </button>
                       </div>
                       <div className="mb-3">
                         <div className="fw-bold small text-truncate text-body">
@@ -482,6 +528,46 @@ export default function WorkplaceDetails({
           </div>
         </div>
       </div>
+
+      <UserModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        onSuccess={() => {
+          fetchWorkplace();
+          setIsUserModalOpen(false);
+        }}
+        initialData={editingUser}
+      />
+
+      <PhoneModal
+        isOpen={isPhoneModalOpen}
+        onClose={() => setIsPhoneModalOpen(false)}
+        onSuccess={() => {
+          fetchWorkplace();
+          setIsPhoneModalOpen(false);
+        }}
+        initialData={editingPhone}
+      />
+
+      <PCModal
+        isOpen={isPcModalOpen}
+        onClose={() => setIsPcModalOpen(false)}
+        onSuccess={() => {
+          fetchWorkplace();
+          setIsPcModalOpen(false);
+        }}
+        initialData={editingPc}
+      />
+
+      <PrinterModal
+        isOpen={isPrinterModalOpen}
+        onClose={() => setIsPrinterModalOpen(false)}
+        onSuccess={() => {
+          fetchWorkplace();
+          setIsPrinterModalOpen(false);
+        }}
+        initialData={editingPrinter}
+      />
     </div>
   );
 }
