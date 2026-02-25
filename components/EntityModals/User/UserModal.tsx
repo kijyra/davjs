@@ -13,13 +13,13 @@ interface UserModalProps {
 
 export default function UserModal({ isOpen, onClose, onSuccess, initialData }: UserModalProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    surName: '',
-    position: '',
-    bitrix: '',
-    aDUserId: '',
-    printerId: '',
-    workplaceId: '',
+    Name: '',
+    SurName: '',
+    Position: '',
+    Bitrix: '',
+    ADUserId: '',
+    PrinterId: '',
+    WorkplaceId: '',
   });
   const [adUsers, setAdUsers] = useState<{ id: number; cn: string }[]>([]);
   const [workplaces, setWorkplaces] = useState<{ id: number; name: string }[]>([]);
@@ -50,29 +50,29 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
 
   useEffect(() => {
     if (initialData) {
-      console.log('Данные для инициализации:', initialData);
       setFormData({
-        name: initialData.Name || '',
-        surName: initialData.SurName || '',
-        position: initialData.Position || '',
-        bitrix: initialData.Bitrix !== null && initialData.Bitrix !== undefined ? String(initialData.Bitrix) : '',
-        aDUserId: initialData.ADUserId ? String(initialData.ADUserId) : '',
-        printerId: initialData.PrinterId ? String(initialData.PrinterId) : '',
-        workplaceId: initialData.WorkplaceId ? String(initialData.WorkplaceId) : '',
+        Name: initialData.name || '',
+        SurName: initialData.surName || '',
+        Position: initialData.position || '',
+        Bitrix: initialData.bitrix != null ? String(initialData.bitrix) : '',
+        ADUserId: initialData.adUserId ? String(initialData.adUserId) : '',
+        PrinterId: initialData.printerId ? String(initialData.printerId) : '',
+        WorkplaceId: initialData.workplaceId ? String(initialData.workplaceId) : '',
       });
     } else {
       setFormData({
-        name: '',
-        surName: '',
-        position: '',
-        bitrix: '',
-        aDUserId: '',
-        printerId: '',
-        workplaceId: '',
+        Name: '',
+        SurName: '',
+        Position: '',
+        Bitrix: '',
+        ADUserId: '',
+        PrinterId: '',
+        WorkplaceId: '',
       });
     }
     setErrors({});
   }, [initialData]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -87,13 +87,13 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
 
     const url = initialData ? '/User/User/Edit' : '/User/User/Add';
     const formBody = new FormData();
-    formBody.append('Name', formData.name);
-    formBody.append('SurName', formData.surName);
-    formBody.append('Position', formData.position);
-    if (formData.bitrix) formBody.append('Bitrix', formData.bitrix);
-    if (formData.aDUserId) formBody.append('ADUserId', formData.aDUserId);
-    if (formData.printerId) formBody.append('PrinterId', formData.printerId);
-    if (formData.workplaceId) formBody.append('WorkplaceId', formData.workplaceId);
+    formBody.append('Name', formData.Name);
+    formBody.append('SurName', formData.SurName);
+    formBody.append('Position', formData.Position);
+    if (formData.Bitrix) formBody.append('Bitrix', formData.Bitrix);
+    if (formData.ADUserId) formBody.append('ADUserId', formData.ADUserId);
+    if (formData.PrinterId) formBody.append('PrinterId', formData.PrinterId);
+    if (formData.WorkplaceId) formBody.append('WorkplaceId', formData.WorkplaceId);
     if (initialData) {
       formBody.append('Id', String(initialData.Id));
     }
@@ -169,7 +169,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                   id="Name"
                   name="Name"
                   placeholder="Имя"
-                  value={formData.name}
+                  value={formData.Name}
                   onChange={handleChange}
                   required
                   disabled={loading}
@@ -185,7 +185,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                   id="SurName"
                   name="SurName"
                   placeholder="Фамилия"
-                  value={formData.surName}
+                  value={formData.SurName}
                   onChange={handleChange}
                   required
                   disabled={loading}
@@ -201,7 +201,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                   id="Position"
                   name="Position"
                   placeholder="Должность"
-                  value={formData.position}
+                  value={formData.Position}
                   onChange={handleChange}
                   disabled={loading}
                 />
@@ -216,7 +216,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                   id="Bitrix"
                   name="Bitrix"
                   placeholder="Битрикс"
-                  value={formData.bitrix}
+                  value={formData.Bitrix}
                   onChange={handleChange}
                   disabled={loading}
                 />
@@ -230,7 +230,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                     className={`form-select ${errors.ADUserId ? 'is-invalid' : ''}`}
                     id="ADUserId"
                     name="ADUserId"
-                    value={formData.aDUserId}
+                    value={formData.ADUserId}
                     onChange={handleChange}
                     disabled={loading}
                   >
@@ -258,7 +258,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                   className={`form-select ${errors.WorkplaceId ? 'is-invalid' : ''}`}
                   id="WorkplaceId"
                   name="WorkplaceId"
-                  value={formData.workplaceId}
+                  value={formData.WorkplaceId}
                   onChange={handleChange}
                   disabled={loading}
                 >
@@ -277,7 +277,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, initialData }: U
                     className={`form-select ${errors.PrinterId ? 'is-invalid' : ''}`}
                     id="PrinterId"
                     name="PrinterId"
-                    value={formData.printerId}
+                    value={formData.PrinterId}
                     onChange={handleChange}
                     disabled={loading}
                   >
